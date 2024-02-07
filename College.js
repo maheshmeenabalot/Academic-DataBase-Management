@@ -22,3 +22,11 @@ connection.query('SELECT * FROM student', function (error, results, fields) {
         console.log(result);
     });
 });
+
+connection.query('SELECT * FROM courses', function (error, results, fields) {
+    if (error)
+        throw error;
+    results.forEach(result => {
+        console.log(result);
+    });
+});
