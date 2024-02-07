@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AMS IIT Goa</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: white; /* Set background color to white */
+            color: #333; /* Set text color to black */
+        }
+        header {
+            background-color: white;
+            color: black;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+             }
+        header img {
+
+            width: 50%;
+            height: auto;
+        }
+        h1 {
+            width: 50%;
+            margin-left: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            align-items: center;
+        }
+        nav {
+            display: flex;
+            background-color: #495057;
+        }
+        nav a {
+            color: #ffffff;
+            text-decoration: none;
+            padding: 10px 15px;
+            margin-right: 10px;
+            background-color: #6c757d;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+        nav a:hover {
+            background-color: #495057;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div>
+            <img src="./cropped-iit_goa.png" alt="IIT Goa Logo">
+        </div>
+        <h1>Academic Database Management System</h1>
+    </header>
+    <nav>
+        <a href="#">Home</a>
+        <a href="#" id="courses">Courses</a>
+        <a href="#" id="std">Students</a>
+    </nav>
+    <div class="container">
+        <!-- Your content goes here -->
+    </div>
+
+   
+    
+        <div class="container" id="studentData">
+            <!-- Student data will be displayed here -->
+        </div>
+    
+        <!-- Your existing JavaScript imports -->
+        <script src="client.js"></script>
+   
+
+</body>
+</html>
