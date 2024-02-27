@@ -21,13 +21,13 @@ CREATE TABLE IF NOT EXISTS courses (
 
 ----- Inserting data into student table-----
 INSERT INTO student (Student_ID, Student_Name, Branch, Batch, Gender, Email, CGPA) VALUES
-('2003120', 'Mahesh', 'CSE', '2020', 'Male', 'mahesh.meena.20031@iitgoa.ac.in', 7.75),
+('2003120', 'Mahesh', 'CSE', '2020', 'Male', 'mahesh.meena.20031@iitgoa.ac.in', 8.75),
 ('2003306', 'Aryan', 'MNC', '2020',	'Male', 'aryan.olkha.20033@iitgoa.ac.in', 7.50),
 ('2003319', 'Rajesh', 'MNC', '2020', 'Male', 'rajesh.meena.20033@iitgoa.ac.in', 9.92),
-('2004220', 'Mesh', 'EE', '2020', 'Male', 'mesh.meena.20042@iitgoa.ac.in', 5.44),
-('2006319', 'Jesh',	'ME', '2020', 'Female',	'jesh.ena.20063@iitgoa.ac.in', 8.45),
+('2004220', 'Mesh', 'EE', '2020', 'Female', 'mesh.meena.20042@iitgoa.ac.in', 5.44),
+('2006319', 'Anil',	'EE', '2020', 'Male',	'anil.20063@iitgoa.ac.in', 9.45),
 ('2103116', 'Ryan',	'CSE',	'2021',	'Male',	'ryan.khan.21031@iitgoa.ac.in', 6.49), 
-('2104214', 'Mitu', 'EE', '2021', 'Female', 'mitu.20042@iitgoa.ac.in', 3.98),
+('2104214', 'Mitu', 'ME', '2021', 'Female', 'mitu.20042@iitgoa.ac.in', 3.98),
 ('2003121', 'Omkar', 'CSE', '2020', 'Male', 'Omkar.Lodekar.20031@iitgoa.ac.in', 9.98);
 
 ----- Inserting data into courses table-----
