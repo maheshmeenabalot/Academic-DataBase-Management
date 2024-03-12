@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,21 +10,25 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: white; /* Set background color to white */
-            color: #333; /* Set text color to black */
+            background-color: white;
+            /* Set background color to white */
+            color: #333;
+            /* Set text color to black */
         }
+
         header {
             background-color: white;
             color: black;
             padding: 20px;
             display: flex;
             align-items: center;
-             }
-        header img {
+        }
 
+        header img {
             width: 50%;
             height: auto;
         }
+
         h1 {
             width: 50%;
             margin-left: 20px;
@@ -31,10 +36,12 @@
             font-weight: bold;
             align-items: center;
         }
+
         nav {
             display: flex;
             background-color: #495057;
         }
+
         nav a {
             color: #ffffff;
             text-decoration: none;
@@ -44,9 +51,11 @@
             border-radius: 4px;
             transition: background-color 0.3s ease;
         }
+
         nav a:hover {
             background-color: #495057;
         }
+
         .container {
             max-width: 800px;
             margin: 20px auto;
@@ -54,8 +63,160 @@
             background-color: white;
             border-radius: 8px;
         }
+
+        /* CSS to style tables */
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th,
+        td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        /* Additional styling for student and course tables */
+        .student-table {
+            margin-bottom: 20px;
+            /* Add margin bottom to separate tables */
+        }
+
+        .course-table {
+            margin-bottom: 20px;
+            /* Add margin bottom to separate tables */
+        }
+
+        /* Hide search bar and button by default */
+        #searchContainer {
+            display: none;
+        }
+
+        /*  */
+        #addstudentForm {
+            display: none;
+            margin: auto;
+            /* Center the form horizontally and vertically */
+            max-width: 400px;
+            /* Set maximum width for the form */
+        }
+
+        #addstudentForm label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        #addstudentForm input[type="text"],
+        #addstudentForm input[type="email"],
+        #addstudentForm select,
+        #addstudentForm button {
+            width: calc(100% - 16px);
+            /* Adjust the width to match label text */
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        #addstudentForm button {
+            width: 100%;
+            /* Make button full width */
+            background-color: #4CAF50;
+            /* Green */
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        #addstudentForm button:hover {
+            background-color: #45a049;
+        }
+
+        /* Optional: Style the select dropdown arrow */
+        #addstudentForm select {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url('data:image/svg+xml;utf8,<svg fill="%23333" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>');
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+            padding-right: 30px;
+            /* Adjust as needed */
+        }
+
+        .Filtercontainer {
+            /* background-color: #45a049;
+     */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .ascontainer {
+            /* background-color: #45a049;
+     */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #searchContainerWrapper {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        #searchContainer {
+            display: none;
+        }
+
+        .studentButton {
+            gap: 10px;
+            display: flex;
+        }
+
+        /* #addStudeBtn {
+    display: none;
+} */
+
+        .filter-block {
+            margin-bottom: 15px;
+        }
+
+        .as-block {
+            margin-bottom: 15px;
+        }
+
+        select,
+        input {
+            margin-bottom: 10px;
+            padding: 8px;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
     </style>
-</head>
+</head>``
+
 <body>
     <header>
         <div>
@@ -64,23 +225,244 @@
         <h1>Academic Database Management System</h1>
     </header>
     <nav>
-        <a href="#">Home</a>
+        <a href="#" id="homeLink">Home</a>
         <a href="#" id="courses">Courses</a>
         <a href="#" id="std">Students</a>
+        <a href="#" id="queryLink">Query</a>
     </nav>
-    <div class="container">
-        <!-- Your content goes here -->
+
+    <div class="container" id="searchContainer">
+        <input type="text" id="searchbar" placeholder="Search.." name="search">
+        <div class="studentButton">
+            <button type="submit" id="searchbtn">Enter</button>
+            <!-- Your content goes here -->
+            <button type="button" id="filterBtn">Filter</button>
+            <button class="addstudent" id="addStudeBtn">Add Student</button>
+            <button class="addcourse" id="addCourseBtn">Add Course</button>
+        </div>
+
+
+
     </div>
 
-   
-    
-        <div class="container" id="studentData">
-            <!-- Student data will be displayed here -->
-        </div>
-    
-        <!-- Your existing JavaScript imports -->
-        <script src="client.js"></script>
-   
+    <div class="container" id="queryContainer" style="display: none;">
+        <input type="text" id="querySearchbar" placeholder="Enter your query.." name="querySearch">
+        <button type="submit" id="querySearchbtn">Search</button>
+    </div>
 
+    <div class="AScontainer">
+        <form id="addstudentForm" style="display:none;"> <br><br>
+            <div class="as-block">
+                <h3>Student ID</h3>
+                <!-- <label for="studentID">Student ID:</label><br> -->
+                <input type="text" id="studentID" name="studentID" defultrequired><br><br>
+            </div>
+            <!-- <label for="studentName">Student Name:</label><br> -->
+            <div class="as-block">
+                <h3>Student Name</h3>
+                <input type="text" id="studentName" name="studentName" required><br><br>
+            </div>
+            <div class="as-block">
+                <h3>Branch</h3>
+                <select name="branch" id="branch">
+                    <option value="">Select Branch</option>
+                    <option value="CSE">CSE</option>
+                    <option value="MNC">MNC</option>
+                    <option value="EE">EE</option>
+                    <option value="ME">ME</option>
+                </select>
+            </div>
+            <div class="as-block">
+                <h3>Batch</h3>
+                <select name="batch" id="batch">
+                    <option value="">Select Batch</option>
+                    <option value="2020">2020</option>
+                    <option value="2021">2021</option>
+                    <option value="2022">2022</option>
+                    <option value="2023">2023</option>
+                </select>
+            </div>
+            <div class="as-block">
+                <h3>Gender</h3>
+                <select name="gender" id="gender">
+                    <option value="">Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select>
+            </div>
+            <!-- <label for="email">Email:</label><br> -->
+            <div class="as-block">
+                <h3>Email</h3>
+                <input type="email" id="email" name="email" required><br><br>
+            </div>
+            <!-- <label for="cgpa">CGPA:</label><br> -->
+            <div class="as-block">
+                <h3>CGPA</h3>
+                <input type="number" id="cgpa" name="cgpa" step="0.01" min="0" max="10" required><br><br>
+            </div>
+            <button type="submit">Submit</button>
+
+        </form>
+    </div>
+    <!-- add course form -->
+    <div class="ascontainer">
+        <form id="addCourseForm" style="display:none;"> <br><br>
+            <div class="as-block">
+                <h3>Course Code</h3>
+                <input type="text" id="courseCode" name="courseCode" required><br>
+            </div>
+            <div class="as-block">
+                <h3>School</h3>
+                <select name="school" id="school">
+                    <option value="">Select School</option>
+                    <option value="SMCS">SMCS</option>
+                    <option value="SES">SES</option>
+                    <option value="SMS">SMS</option>
+                    <option value="SHSS">SHSS</option>
+                </select>
+            </div>
+            <div class="as-block">
+                <h3>Instructor Name</h3>
+                <input type="text" id="instructorName" name="instructorName" required><br>
+            </div>
+            <div class="as-block">
+                <h3>Email</h3>
+                <input type="email" id="courseEmail" name="courseEmail" required><br>
+            </div>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+    <div class="Filtercontainer">
+        <form id="filterForm" style="display:none;">
+            <h2>Students</h2>
+            <div class="filter-block">
+                <h3>Branch</h3>
+                <select name="branch" id="branch">
+                    <option value="">Select Branch</option>
+                    <option value="CSE">CSE</option>
+                    <option value="MNC">MNC</option>
+                    <option value="EE">EE</option>
+                    <option value="ME">ME</option>
+                </select>
+            </div>
+            <div class="filter-block">
+                <h3>Batch</h3>
+                <select name="batch" id="batch">
+                    <option value="">Select Batch</option>
+                    <option value="2020">2020</option>
+                    <option value="2021">2021</option>
+                    <option value="2022">2022</option>
+                    <option value="2023">2023</option>
+                </select>
+            </div>
+            <div class="filter-block">
+                <h3>Gender</h3>
+                <select name="gender" id="gender">
+                    <option value="">Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select>
+            </div>
+            <div class="filter-block">
+                <h3>CGPA</h3>
+                <input type="number" name="cgpaMin" id="cgpaMin" placeholder="Enter Min CGPA">
+                <input type="number" name="cgpaMax" id="cgpaMax" placeholder="Enter Max CGPA">
+            </div>
+            <button type="submit" id="applyFilters">Apply Filters</button>
+        </form>
+    </div>
+
+
+
+    <div class="container" id="studentData">
+        <!-- Student data will be displayed here -->
+    </div>
+    <div id="enrolledStudents">
+        <!-- Enrolled students will be displayed here -->
+    </div>
+
+
+    <script src="client.js"></script>
+    <script src="index.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var coursesLink = document.querySelector('#courses');
+            var studentsLink = document.querySelector('#std');
+            var homeLink = document.querySelector('#homeLink');
+            var queryLink = document.querySelector('#queryLink');
+            var searchContainer = document.getElementById('searchContainer');
+            var queryContainer = document.getElementById('queryContainer');
+            //addstu
+            var addStudeBtnCont = document.getElementById('addStudeBtn');
+
+            // Hide the "Add Student" button by default
+            addStudeBtnCont.style.display = 'none';
+
+            // Event listeners for links
+            coursesLink.addEventListener('click', function (event) {
+                event.preventDefault();
+                showSearchContainer();
+                filterBtn.style.display = 'none';
+                enrolledStudents.style.display = 'none';
+
+
+
+            });
+
+            studentsLink.addEventListener('click', function (event) {
+                event.preventDefault();
+                showSearchContainer();
+                //addstu
+                showaddStudeBtnCont();
+                addCourseBtn.style.display = 'none';
+            });
+
+            homeLink.addEventListener('click', function (event) {
+                event.preventDefault();
+                hideContainers();
+
+            });
+
+            queryLink.addEventListener('click', function (event) {
+                event.preventDefault();
+                showQueryContainer();
+            });
+
+            // Function to show search container
+            function showSearchContainer() {
+                searchContainer.style.display = 'block';
+                queryContainer.style.display = 'none';
+            }
+            //addstu
+            function showaddStudeBtnCont() {
+                if (addStudeBtnCont) {
+                    addStudeBtnCont.style.display = 'block';
+                }
+            }
+
+            // Function to show query container
+            function showQueryContainer() {
+                searchContainer.style.display = 'none';
+                queryContainer.style.display = 'block';
+                addStudeBtnCont.style.display = 'none';
+            }
+
+
+            // Function to hide all containers
+            function hideContainers() {
+                searchContainer.style.display = 'none';
+                queryContainer.style.display = 'none';
+                //addstu
+                addStudeBtnCont.style.display = 'none';
+                addstudentForm.style.display = 'none';
+                addCourseForm.style.display = 'none';
+                filterForm.style.display = 'none';
+                // enrolledStudents.display = 'none';
+            }
+        });
+    </script>
 </body>
+
 </html>
