@@ -28,6 +28,7 @@ document.addEventListener('DOMContentLoaded', function () {
         searchInput.value = '';
         FilterForm.style.display = 'none';
         studentForm.style.display = 'none';
+        addCourseForm.style.display = 'none';
         FilterBtn.style.display = 'block';
         enrolledStudentsContainer.style.display = 'none';
 
@@ -40,7 +41,8 @@ document.addEventListener('DOMContentLoaded', function () {
         hideContainers();
         fetchCourseData();
         addStudeBtn.style.display = 'none';
-        
+        addCourseForm.style.display = 'none';
+        studentForm.style.display = 'none';
         searchInput.value = '';
 
     });
@@ -50,6 +52,8 @@ document.addEventListener('DOMContentLoaded', function () {
         hideContainers();
         addStudeBtn.style.display = 'none';
         searchInput.value = '';
+        addCourseForm.style.display = 'none';
+        studentForm.style.display = 'none';
 
     });
 
@@ -231,27 +235,29 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .catch(error => {
                 console.error('Error adding student:', error);
-                // alert('Failed to add student');
-                const result0 = window.confirm('Failed to add student. Do you want to retry?');
-                if (result0) {
-                    // User clicked "OK"
-                    // Add another student (perform the necessary actions)
-                    console.log('Add another student');
-                    document.getElementById("addstudentForm").reset();
-                    showSearchContainer();
-                    //addstu
-                    showaddStudeBtnCont();
-                } else {
-                    // User clicked "Cancel"
-                    console.log('Operation cancelled');
-                    studentForm.style.display = 'none';
-                    // addStudeBtn.style.display = 'block';
-                    fetchStudentData();
-                    // addStudeBtn.style.display = 'block';
-                    showSearchContainer();
-                    //addstu
-                    showaddStudeBtnCont(    );
+                if (error.name !== 'AbortError') {
+                    // alert('Failed to add student');
+                    const result0 = window.confirm('Failed to add student. Do you want to retry?');
+                    if (result0) {
+                        // User clicked "OK"
+                        // Add another student (perform the necessary actions)
+                        console.log('Add another student');
+                        document.getElementById("addstudentForm").reset();
 
+                        //addstu
+                        showaddStudeBtnCont();
+                    } else {
+                        // User clicked "Cancel"
+                        console.log('Operation cancelled');
+                        studentForm.style.display = 'none';
+                        // addStudeBtn.style.display = 'block';
+                        fetchStudentData();
+                        // addStudeBtn.style.display = 'block';
+                        showSearchContainer();
+                        //addstu
+                        showaddStudeBtnCont();
+
+                    }
                 }
             });
     }
@@ -260,18 +266,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
     addCourseForm.addEventListener('submit', function (event) {
         event.preventDefault();
-    
+
         const formData = new FormData(addCourseForm);
         const courseCode = formData.get('courseCode');
         const school = formData.get('school');
         const instructorName = formData.get('instructorName');
         const email = formData.get('courseEmail');
-    
+
         addCourseToDatabase(courseCode, school, instructorName, email);
-    
+
         addCourseForm.style.display = 'none';
     });
-    
+
     function addCourseToDatabase(courseCode, school, instructorName, email) {
         const url = 'http://localhost:5000/submit-course';
         const data = {
@@ -280,7 +286,7 @@ document.addEventListener('DOMContentLoaded', function () {
             instructorName: instructorName,
             email: email
         };
-    
+
         fetch(url, {
             method: 'POST',
             headers: {
@@ -288,32 +294,32 @@ document.addEventListener('DOMContentLoaded', function () {
             },
             body: JSON.stringify(data)
         })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Failed to add course');
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log('Course added successfully:', data);
-            const result1 = window.confirm('Course added successfully. Do you want to add another Course?');
-            // Add logic for handling successful course addition
-            if (result1) {
-                // User clicked "OK"
-                // Add another student (perform the necessary actions)
-                console.log('Add another Course');
-                document.getElementById("addCourseForm").reset();
-            } else {
-                // User clicked "Cancel"
-                console.log('Operation cancelled');
-                addCourseForm.style.display = 'none';
-                addCourseBtn.style.display = 'block';
-            }
-            fetchCourseData(); // Refresh student table
-            // showSearchContainer();
-        })
-        .catch(error => {
-            console.error('Error adding course:', error);
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to add course');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Course added successfully:', data);
+                const result1 = window.confirm('Course added successfully. Do you want to add another Course?');
+                // Add logic for handling successful course addition
+                if (result1) {
+                    // User clicked "OK"
+                    // Add another student (perform the necessary actions)
+                    console.log('Add another Course');
+                    document.getElementById("addCourseForm").reset();
+                } else {
+                    // User clicked "Cancel"
+                    console.log('Operation cancelled');
+                    addCourseForm.style.display = 'none';
+                    addCourseBtn.style.display = 'block';
+                }
+                fetchCourseData(); // Refresh student table
+                // showSearchContainer();
+            })
+            .catch(error => {
+                console.error('Error adding course:', error);
 
                 const result2 = window.confirm('Failed to add Course. Do you want to retry?');
                 if (result2) {
@@ -321,7 +327,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     // Add another student (perform the necessary actions)
                     console.log('Add another Course');
                     document.getElementById("addCourseForm").reset();
-                     showSearchContainer();
+                    showSearchContainer();
                     //addstu
                     // addCourseBtn.style.display='block';
                 } else {
@@ -330,16 +336,16 @@ document.addEventListener('DOMContentLoaded', function () {
                     studentForm.style.display = 'none';
                     // addStudeBtn.style.display = 'block';
                     fetchCourseData();
-                    addCourseBtn.style.display='block';
+                    addCourseBtn.style.display = 'block';
                     // addStudeBtn.style.display = 'block';
                     showSearchContainer();
                     // //addstu
                     // showaddStudeBtnCont();
 
                 }
-        });
+            });
     }
-    
+
 
     //********Filter***** */
     const fform = document.getElementById('filterForm');
