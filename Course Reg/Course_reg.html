@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Course Registration</title>
+  <link rel="stylesheet" href="Course_reg.css" />
+  <style>
+    #coursesTable {
+      display: none; /* Initially hide the table */
+    }
+  </style>
+</head>
+<body>
+  <h1>Course Registration</h1>
+  <form id="registrationForm">
+    <label for="Student_ID">Student ID:</label>
+    <input type="text" id="Student_ID" name="Student_ID" required /><br /><br />
+
+    <label for="Department">Select Department:</label>
+    <select name="Department" id="Department">
+      <option value="">Select Department</option>
+      <option value="CSE">Computer Science and Engineering</option>
+      <option value="MnC">Mathematics and Computing</option>
+      <option value="EE">Electrical Engineering</option>
+      <option value="ME">Mechanical Engineering</option>
+    </select><br /><br />
+
+    <label for="Semester">Select Semester:</label>
+    <select name="Semester" id="Semester">
+      <option value="">Select Semester</option>
+      <option value="1">Semester 1</option>
+      <option value="2">Semester 2</option>
+      <option value="3">Semester 3</option>
+      <option value="4">Semester 4</option>
+      <option value="5">Semester 5</option>
+      <option value="6">Semester 6</option>
+      <option value="7">Semester 7</option>
+      <option value="8">Semester 8</option>
+    </select><br /><br />
+
+    <table id="coursesTable" border="1">
+      <thead>
+        <tr>
+          <th>Course Code</th>
+          <th>Course Type</th>
+          <th>Instructor Name</th>
+          <th>Email</th>
+          <th>Select</th>
+          <!-- Added: Checkbox column -->
+        </tr>
+      </thead>
+      <tbody id="coursesBody"></tbody>
+    </table>
+
+    <input type="submit" value="Register" />
+  </form>
+
+  <!-- JavaScript code -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const Department = document.getElementById("Department");
+      const Semester = document.getElementById("Semester");
+      const coursesBody = document.getElementById("coursesBody");
+      const coursesTable = document.getElementById("coursesTable"); // Get reference to the table
+
+      function updateCourses() {
+        const selectedDepartment = Department.value;
+        const selectedSemester = Semester.value;
+
+        if (selectedDepartment && selectedSemester) {
+          fetch(`http://localhost:3000/courses?Department=${selectedDepartment}&Semester=${selectedSemester}`)
+            .then(response => response.json())
+            .then(data => {
+              console.log("Fetched courses:", data.courses);
+              coursesBody.innerHTML = ""; // Clear previous courses
+              data.courses.forEach(course => {
+                const courseCode = course.Course_Code;
+                const courseType = course.Course_Type;
+                const instructorName = course.Instructor_Name;
+                const email = course.Email;
+                const row = `
+                  <tr>
+                    <td>${courseCode}</td>
+                    <td>${courseType}</td>
+                    <td>${instructorName}</td>
+                    <td>${email}</td>
+                    <td><input type="checkbox" name="selectedCourses" value="${courseCode}"></td>
+                  </tr>`;
+                coursesBody.innerHTML += row;
+              });
+              coursesTable.style.display = "table"; // Show the table
+            })
+            .catch(error => {
+              console.error("Error fetching courses:", error);
+            });
+        } else {
+          coursesTable.style.display = "none"; // Hide the table if department or semester is not selected
+        }
+      }
+
+      // Add event listeners
+      Department.addEventListener("change", updateCourses);
+      Semester.addEventListener("change", updateCourses);
+
+      document.getElementById("registrationForm").addEventListener("submit", function (event) {
+        event.preventDefault(); // Prevent the default form submission
+
+        const studentID = document.getElementById("Student_ID").value;
+
+        const selectedCourses = Array.from(document.querySelectorAll('input[name="selectedCourses"]:checked'))
+            .map(course => course.value);
+
+        const formData = {
+            Student_ID: studentID,
+            Course_Codes: selectedCourses
+        };
+
+        fetch('http://localhost:3000/submit', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(response => {
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            return response.text();
+        })
+        .then(data => {
+            console.log(data);
+            alert("Registration successful!");
+            // Refresh the page
+            location.reload();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert("Registration failed. Please try again later.");
+        });
+      });
+    });
+  </script>
+</body>
+</html>
