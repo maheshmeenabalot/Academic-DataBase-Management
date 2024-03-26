@@ -19,7 +19,10 @@ CREATE TABLE IF NOT EXISTS courses (
   Course_Code varchar(50) PRIMARY KEY NOT NULL,
   School varchar(50) NOT NULL,
   Instructor_Name varchar(50) NOT NULL,
-  Email varchar(50) NOT NULL);
+  Email varchar(50) NOT NULL,
+  Department varchar(50),
+  Semester varchar(50),
+  Course_Type varchar(50));
 
 ----- Inserting data into student table-----
 INSERT INTO students (Student_ID, Student_Name, Branch, Batch, Gender, Email, CGPA) VALUES
@@ -123,14 +126,15 @@ INSERT INTO course_enrollment (Course_code, Student_ID) VALUES
 ('EE102', '2004220');
 
 ----- Inserting data into courses table-----
-INSERT INTO courses (Course_code, School, Instructor_Name, Email) VALUES
-('CS101', 'SMCS', 'Dr. Clint', 'clint@iitgoa.ac.in'),
-('CS441', 'SMCS', 'Dr. Rahul', 'rahul@iitgoa.ac.in'),
-('EE102', 'SES', 'Dr. Ram',	'ram@iitgoa.ac.in'),
-('MA101', 'SMCS', 'Dr. Rajeev', 'rajeev@iitgoa.ac.in'),
-('MA308', 'SMCS', 'Dr. Shiv', 'shiv@iitgoa.ac.in'),
-('ME606', 'SMS', 'Dr. Priya', 'priya@iitgoa.ac.in'),
-('ME609', 'SMS', 'Dr. Arindam', 'arindam@iitgoa.ac.in');
+INSERT INTO courses (Course_code, School, Instructor_Name, Email, Department, Semester, Course_Type) VALUES
+('CS101', 'SMCS', 'Dr. Clint', 'clint@iitgoa.ac.in', 'CSE MnC', '1', 'Program Elective'),
+('CS441', 'SMCS', 'Dr. Rahul', 'rahul@iitgoa.ac.in', 'CSE', '5', 'Program Elective'),
+('EE102', 'SES', 'Dr. Ram',	'ram@iitgoa.ac.in', 'EE', '1', 'Program Elective'),
+('MA101', 'SMCS', 'Dr. Rajeev', 'rajeev@iitgoa.ac.in', 'CSE MnC EE ME', '1', 'Program Elective'),
+('MA308', 'SMCS', 'Dr. Shiv', 'shiv@iitgoa.ac.in', 'MnC', '3', 'Program Elective'),
+('ME606', 'SMS', 'Dr. Priya', 'priya@iitgoa.ac.in', 'ME', '4', 'Program Elective'),
+('ME609', 'SMS', 'Dr. Arindam', 'arindam@iitgoa.ac.in', 'CSE MnC EE ME', '2 4 6 8', 'Open Elective'),
+('HS254', 'SHHS', 'Dr. Sunil', 'sunil@iitgoa.ac.in', 'CSE MnC EE ME', '5 7', 'Open Elective');
 
 DROP TABLE IF EXISTS course_enrollment;
 CREATE TABLE IF NOT EXISTS course_enrollment (
