@@ -28,7 +28,6 @@ document.addEventListener('DOMContentLoaded', function () {
         searchInput.value = '';
         FilterForm.style.display = 'none';
         studentForm.style.display = 'none';
-        addCourseForm.style.display = 'none';
         FilterBtn.style.display = 'block';
         enrolledStudentsContainer.style.display = 'none';
 
@@ -41,8 +40,7 @@ document.addEventListener('DOMContentLoaded', function () {
         hideContainers();
         fetchCourseData();
         addStudeBtn.style.display = 'none';
-        addCourseForm.style.display = 'none';
-        studentForm.style.display = 'none';
+        
         searchInput.value = '';
 
     });
@@ -52,8 +50,6 @@ document.addEventListener('DOMContentLoaded', function () {
         hideContainers();
         addStudeBtn.style.display = 'none';
         searchInput.value = '';
-        addCourseForm.style.display = 'none';
-        studentForm.style.display = 'none';
 
     });
 
@@ -235,29 +231,27 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .catch(error => {
                 console.error('Error adding student:', error);
-                if (error.name !== 'AbortError') {
-                    // alert('Failed to add student');
-                    const result0 = window.confirm('Failed to add student. Do you want to retry?');
-                    if (result0) {
-                        // User clicked "OK"
-                        // Add another student (perform the necessary actions)
-                        console.log('Add another student');
-                        document.getElementById("addstudentForm").reset();
+                // alert('Failed to add student');
+                const result0 = window.confirm('Failed to add student. Do you want to retry?');
+                if (result0) {
+                    // User clicked "OK"
+                    // Add another student (perform the necessary actions)
+                    console.log('Add another student');
+                    document.getElementById("addstudentForm").reset();
+                    showSearchContainer();
+                    //addstu
+                    showaddStudeBtnCont();
+                } else {
+                    // User clicked "Cancel"
+                    console.log('Operation cancelled');
+                    studentForm.style.display = 'none';
+                    // addStudeBtn.style.display = 'block';
+                    fetchStudentData();
+                    // addStudeBtn.style.display = 'block';
+                    showSearchContainer();
+                    //addstu
+                    showaddStudeBtnCont(    );
 
-                        //addstu
-                        showaddStudeBtnCont();
-                    } else {
-                        // User clicked "Cancel"
-                        console.log('Operation cancelled');
-                        studentForm.style.display = 'none';
-                        // addStudeBtn.style.display = 'block';
-                        fetchStudentData();
-                        // addStudeBtn.style.display = 'block';
-                        showSearchContainer();
-                        //addstu
-                        showaddStudeBtnCont();
-
-                    }
                 }
             });
     }
@@ -266,18 +260,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
     addCourseForm.addEventListener('submit', function (event) {
         event.preventDefault();
-
+    
         const formData = new FormData(addCourseForm);
         const courseCode = formData.get('courseCode');
         const school = formData.get('school');
         const instructorName = formData.get('instructorName');
         const email = formData.get('courseEmail');
-
+    
         addCourseToDatabase(courseCode, school, instructorName, email);
-
+    
         addCourseForm.style.display = 'none';
     });
-
+    
     function addCourseToDatabase(courseCode, school, instructorName, email) {
         const url = 'http://localhost:5000/submit-course';
         const data = {
@@ -286,7 +280,7 @@ document.addEventListener('DOMContentLoaded', function () {
             instructorName: instructorName,
             email: email
         };
-
+    
         fetch(url, {
             method: 'POST',
             headers: {
@@ -294,32 +288,32 @@ document.addEventListener('DOMContentLoaded', function () {
             },
             body: JSON.stringify(data)
         })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to add course');
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log('Course added successfully:', data);
-                const result1 = window.confirm('Course added successfully. Do you want to add another Course?');
-                // Add logic for handling successful course addition
-                if (result1) {
-                    // User clicked "OK"
-                    // Add another student (perform the necessary actions)
-                    console.log('Add another Course');
-                    document.getElementById("addCourseForm").reset();
-                } else {
-                    // User clicked "Cancel"
-                    console.log('Operation cancelled');
-                    addCourseForm.style.display = 'none';
-                    addCourseBtn.style.display = 'block';
-                }
-                fetchCourseData(); // Refresh student table
-                // showSearchContainer();
-            })
-            .catch(error => {
-                console.error('Error adding course:', error);
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to add course');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Course added successfully:', data);
+            const result1 = window.confirm('Course added successfully. Do you want to add another Course?');
+            // Add logic for handling successful course addition
+            if (result1) {
+                // User clicked "OK"
+                // Add another student (perform the necessary actions)
+                console.log('Add another Course');
+                document.getElementById("addCourseForm").reset();
+            } else {
+                // User clicked "Cancel"
+                console.log('Operation cancelled');
+                addCourseForm.style.display = 'none';
+                addCourseBtn.style.display = 'block';
+            }
+            fetchCourseData(); // Refresh student table
+            // showSearchContainer();
+        })
+        .catch(error => {
+            console.error('Error adding course:', error);
 
                 const result2 = window.confirm('Failed to add Course. Do you want to retry?');
                 if (result2) {
@@ -327,7 +321,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     // Add another student (perform the necessary actions)
                     console.log('Add another Course');
                     document.getElementById("addCourseForm").reset();
-                    showSearchContainer();
+                     showSearchContainer();
                     //addstu
                     // addCourseBtn.style.display='block';
                 } else {
@@ -336,16 +330,16 @@ document.addEventListener('DOMContentLoaded', function () {
                     studentForm.style.display = 'none';
                     // addStudeBtn.style.display = 'block';
                     fetchCourseData();
-                    addCourseBtn.style.display = 'block';
+                    addCourseBtn.style.display='block';
                     // addStudeBtn.style.display = 'block';
                     showSearchContainer();
                     // //addstu
                     // showaddStudeBtnCont();
 
                 }
-            });
+        });
     }
-
+    
 
     //********Filter***** */
     const fform = document.getElementById('filterForm');
@@ -589,3 +583,362 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
+function openLoginForm() {
+    // Show login form
+    const loginForm = document.getElementById('loginForm');
+    loginForm.style.display = 'block';
+
+    // Clear previous input values
+    document.getElementById('username').value = '';
+    document.getElementById('password').value = '';
+
+    // Hide the logged-in user info
+    document.getElementById('userProfile').style.display = 'none';
+}
+
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    const loginForm = document.getElementById('loginForm');
+    const loginContainer = document.querySelector('.loginContainer');
+    const loggedInUser = document.getElementById('loggedInUser');
+    const navbar = document.getElementById('navbar');
+    const loginButton = document.getElementById('loginButton');
+
+    // Check if the user is already logged in
+    const isLoggedIn = sessionStorage.getItem('isLoggedIn') === 'true';
+
+    if (isLoggedIn) {
+        // Remove existing user information
+        while (loggedInUser.firstChild) {
+            loggedInUser.removeChild(loggedInUser.firstChild);
+        }
+
+        // Display the username in the navbar
+        const username = sessionStorage.getItem('username');
+        const userAvatar = document.createElement('i');
+        userAvatar.classList.add('fa-regular', 'fa-user');
+        loggedInUser.appendChild(userAvatar);
+        loggedInUser.appendChild(document.createTextNode(username));
+        navbar.insertBefore(loggedInUser, navbar.childNodes[0]); // Insert the "Logged in as" element at the beginning of the navbar
+    } else {
+        // Show the login button if the user is not logged in
+        loginButton.style.display = 'block';
+    }
+
+    loginButton.addEventListener('click', function () {
+        // Toggle the display of the login form when the button is clicked
+        loginContainer.style.display = loginContainer.style.display === 'none' ? 'block' : 'none';
+    });
+    
+    function hideProtectedContent() {
+        document.querySelectorAll('.protected-content').forEach(element => {
+            element.style.display = 'none';
+        });
+    }
+    
+    // Function to show sections with the 'protected-content' class
+    function showProtectedContent() {
+        document.querySelectorAll('.protected-content').forEach(element => {
+            element.style.display = 'block';
+        });
+    }
+    
+    // Add event listener to the logout button
+    logoutButton.addEventListener('click', function () {
+        // Call the function to hide protected content when the user logs out
+        hideProtectedContent();
+        // Additional logout functionality here...
+    });
+
+    loginForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+
+        const credentials = {
+            username: username,
+            password: password
+        };
+
+        fetch('http://localhost:5000/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(credentials)
+        })
+        .then(response => {
+            // After successful login
+if (response.ok) {
+    console.log('Login successful');
+    sessionStorage.setItem('isLoggedIn', 'true');
+    sessionStorage.setItem('username', username);
+    loginContainer.style.display = 'none';
+
+    showProtectedContent();
+    fetchUserDetails(username);
+    fetchProfileData(username);
+    // Query student table to get student's name
+    
+    fetch(`http://localhost:5000/student/${username}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        const studentName = data.Student_Name;
+        
+
+        // Remove existing user information
+        while (loggedInUser.firstChild) {
+            loggedInUser.removeChild(loggedInUser.firstChild);
+        }
+
+        
+
+        // Display the username in the navbar
+        const userAvatar = document.createElement('i');
+        userAvatar.classList.add('fa-regular', 'fa-user');
+        loggedInUser.appendChild(userAvatar);
+        loggedInUser.appendChild(document.createTextNode('  '+studentName));
+        navbar.insertBefore(loggedInUser, navbar.childNodes[0]); // Insert the "Logged in as" element at the beginning of the navbar
+
+        // Hide the login button after successful login
+        
+        loginButton.style.display = 'none';
+       
+        
+    })
+    .catch(error => {
+        console.error('Error fetching student data:', error);
+    });
+} else {
+    console.error('Login failed');
+}
+
+        });
+    });
+});
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    const loginForm = document.getElementById('loginForm');
+    const loginContainer = document.querySelector('.loginContainer');
+    const loggedInUser = document.getElementById('loggedInUser');
+    const loginButton = document.getElementById('loginButton'); // assuming the id of the login button is 'loginButton'
+
+    // Function to check login status
+    function checkLoginStatus() {
+        // Check if the user is logged in
+        const isLoggedIn = sessionStorage.getItem('isLoggedIn') === 'true';
+    
+        if (isLoggedIn) {
+            // Hide the login form and login button
+            loginForm.style.display = 'none';
+            loginContainer.style.display = 'none';
+            loginContainer.style.boxShadow = 'none'; // Remove shadow
+            loginButton.style.display = 'none';
+            // Show the logged-in user info
+            loggedInUser.style.display = 'block';
+        } else {
+            // Show the login form and login button
+            loginForm.style.display = 'block';
+            loginContainer.style.display = 'none';
+            loginContainer.style.boxShadow = 'none'; // Remove shadow
+            loginButton.style.display = 'block';
+            // Hide the logged-in user info
+            loggedInUser.style.display = 'none';
+        }
+
+        
+    }
+    
+    // Check login status when the page loads
+    checkLoginStatus();
+
+    // Event listener for login form submission
+    loginForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+        // Assuming you have login logic here
+        // After successful login, call the checkLoginStatus function again to hide the login form
+        checkLoginStatus();
+    });
+});
+
+var loggedIn = false;
+
+        function toggleUser() {
+            var userProfile = document.getElementById("userProfile");
+            var loggedInUser = document.getElementById("loggedInUser");
+            var loginButton = document.getElementById("loginButton");
+            var logoutButton = document.getElementById("logoutButton");
+
+            if (loggedIn) {
+                // If user is logged in, log them out
+                loggedIn = false;
+                userProfile.style.display = "inline-block";
+                loggedInUser.style.display = "none";
+                logoutButton.style.display = "none";
+                loginButton.style.display = "inline-block";
+            } else {
+                // If user is logged out, display login options
+                loggedIn = true;
+                userProfile.style.display = "none";
+                loggedInUser.style.display = "none";
+                logoutButton.style.display = "inline-block";
+                loginButton.style.display = "none";
+                openLoginForm(); // Open login form
+            }
+        }
+
+        function logout() {
+            // Perform logout action (clear session, etc.)
+            // For demonstration, just toggle back to login state
+            toggleUser();
+        }
+
+
+        document.getElementById("Profile").addEventListener("click", function() {
+            var profileDiv = document.getElementById("ProfileCont");
+            if (profileDiv.style.display === "none") {
+                profileDiv.style.display = "block";
+                const username = sessionStorage.getItem('username'); // Get the username from sessionStorage
+                console.log(username);
+                fetchProfileData(username); // Pass the username to the fetchProfileData function
+            } else {
+                profileDiv.style.display = "none";
+            }
+        });
+        
+        document.getElementById("fetchProfileBtn").addEventListener("click", function() {
+            const username = sessionStorage.getItem('username'); // Get the username from sessionStorage
+            fetchProfileData(username); // Call the function to fetch profile data with the username
+        });
+        
+        function fetchProfileData(username) {
+            // Construct the URL with the username as a query parameter
+            const url = `http://localhost:5000/profile?username=${username}`;
+        
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (!data || Object.keys(data).length === 0) {
+                        throw new Error('Empty or malformed response');
+                    }
+                    populateProfileForm(data);
+                })
+                .catch(error => {
+                    console.error('Error fetching profile data:', error);
+                    alert('Error fetching profile data');
+                });
+        }
+        
+        
+        function populateProfileForm(data) {
+            // Populate the frontend form with data received from the backend
+            document.getElementById("profileIDInput").value = data.Student_ID || '';
+            document.getElementById("profileNameInput").value = data.Student_Name || '';
+            document.getElementById("profileBranchInput").value = data.Branch || '';
+            document.getElementById("profileBatchInput").value = data.Batch || '';
+            document.getElementById("profileGenderInput").value = data.Gender || '';
+            document.getElementById("profileEmailInput").value = data.Email || '';
+            document.getElementById("profileCGPAInput").value = data.CGPA || '';
+            document.getElementById("profileAddressInput").value = data.Address || '';
+            document.getElementById("profileMotherNameInput").value = data.Mother_Name || '';
+            document.getElementById("profileFatherNameInput").value = data.Father_Name || '';
+            document.getElementById("profileFatherMobileInput").value = data.Father_Mobile || '';
+            document.getElementById("profileBloodGroupInput").value = data.Blood_Group || '';
+            
+            const profilePhotoImg = document.querySelector("#profilePhotoContainer img");
+            if (data.Photo) {
+                profilePhotoImg.src = data.Photo; // Set the source to the photo URL from data
+                console.log(data.Photo);
+            } else {
+                // If no photo available, display the FontAwesome user icon
+                profilePhotoImg.src = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/svgs/regular/user.svg";
+            }
+            
+            // Show the update button
+            document.getElementById("updateProfileBtn").style.display = "inline-block";
+        }
+        
+// code for update button
+document.getElementById("updateProfileBtn").addEventListener("click", function() {
+    // Make the form fields editable
+    toggleFormEditable(true);
+    // Show the submit button
+    document.getElementById("submitProfileBtn").style.display = "inline-block";
+    // Hide the update button
+    document.getElementById("updateProfileBtn").style.display = "none";
+});
+
+document.getElementById("submitProfileBtn").addEventListener("click", function() {
+    const username = sessionStorage.getItem('username'); // Get the username from sessionStorage
+    updateProfile(username); // Pass the username to the updateProfile function
+});
+
+// Call toggleFormEditable initially to set the form fields as read-only
+toggleFormEditable(false);
+
+function toggleFormEditable(editable) {
+    // Get all input fields in the form
+    const inputs = document.querySelectorAll("#profileForm input");
+    // Loop through each input field and toggle the readOnly attribute
+    inputs.forEach(input => {
+        input.readOnly = !editable;
+    });
+}
+
+function updateProfile(username) {
+    // Retrieve the updated profile details
+    const updatedName = document.getElementById("profileNameInput").value;
+    const updatedEmail = document.getElementById("profileEmailInput").value;
+    const updatedAddress = document.getElementById("profileAddressInput").value;
+
+    // Prepare the updated data object
+    const updatedData = {
+        Student_ID: username, // Include the username in the updated data
+        Student_Name: updatedName,
+        Email: updatedEmail,
+        Address: updatedAddress
+        // Add other fields as needed
+    };
+
+    // Use fetch or an AJAX request to send the updated data to the server
+    fetch('http://localhost:5000/updateProfile', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(updatedData)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        // Handle the response from the server, e.g., display a success message
+        console.log('Profile updated successfully');
+        // Reset the form fields to read-only state
+        toggleFormEditable(false);
+        // Hide the submit button
+        document.getElementById("submitProfileBtn").style.display = "none";
+        // Show the update button again
+        document.getElementById("updateProfileBtn").style.display = "inline-block";
+    })
+    .catch(error => {
+        console.error('Error updating profile:', error);
+        // Handle errors, e.g., display an error message to the user
+    });
+}
