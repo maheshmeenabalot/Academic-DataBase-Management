@@ -588,11 +588,13 @@ button:hover {
 }
 
 #IDCardBtn,
+#fetchProfileBtn,
 #ScholarshipBtn {
     background-color: #008cba;
 }
 
 #IDCardBtn:hover,
+#fetchProfileBtn:hover,
 #ScholarshipBtn:hover {
     background-color: #007298;
 }
@@ -611,3 +613,51 @@ button:hover {
     border: 1px solid #ccc;
     border-radius: 50px;
 }
+
+
+/*css for courses list*/
+/* Style for course list container */
+#courseList {
+    padding: 20px;
+  }
+  
+  /* Style for semester headings */
+  h2 {
+    border: 1px solid #ddd;
+    padding: 5px;
+    margin-top: 20px;
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  /* Style for the table */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    border: 1px solid #818284;
+  }
+  
+  /* Style for table header */
+  th {
+    background-color: #50688a;
+    padding: 10px;
+    border: 1px solid #818284;
+  }
+  
+  /* Style for table cells */
+  td {
+    padding: 10px;
+    border: 1px solid #818284;
+  }
+  
+  /* Style for table rows */
+  tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  /* Hover effect for table rows */
+  tr:hover {
+    background-color: #f2f2f2;
+  }
+  
