@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Profile</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <a href="index.html" class="back-H-button">Back to Home</a>
+    <div id="ProfileCont" style="display: block;">
+        <h1>User Profile</h1>
+        <div id="profileForm">
+            <div id="profilePhotoContainer" class="photo">
+                <label for="profilePhotoInput"></label>
+                <img src="dummy-photo.png" alt="Dummy Photo">
+            </div>
+
+            <br>
+
+            <div class="form-row">
+                <label for="profileIDInput">Student ID:</label>
+                <input type="text" id="profileIDInput">
+            </div>
+
+            <div class="form-row">
+                <label for="profileNameInput">Name:</label>
+                <input type="text" id="profileNameInput">
+            </div>
+
+            <div class="form-row">
+                <label for="profileBranchInput">Branch:</label>
+                <input type="text" id="profileBranchInput">
+            </div>
+
+            <div class="form-row">
+                <label for="profileBatchInput">Batch:</label>
+                <input type="text" id="profileBatchInput">
+            </div>
+
+            <div class="form-row">
+                <label for="profileGenderInput">Gender:</label>
+                <input type="text" id="profileGenderInput">
+            </div>
+
+            <div class="form-row">
+                <label for="profileEmailInput">Email:</label>
+                <input type="email" id="profileEmailInput">
+            </div>
+
+            <div class="form-row">
+                <label for="profileCGPAInput">CGPA:</label>
+                <input type="text" id="profileCGPAInput">
+            </div>
+
+            <div class="form-row">
+                <label for="profileAddressInput">Address:</label>
+                <input type="text" id="profileAddressInput">
+            </div>
+
+            <div class="form-row">
+                <label for="profileMotherNameInput">Mother's Name:</label>
+                <input type="text" id="profileMotherNameInput">
+            </div>
+
+            <div class="form-row">
+                <label for="profileFatherNameInput">Father's Name:</label>
+                <input type="text" id="profileFatherNameInput">
+            </div>
+
+            <div class="form-row">
+                <label for="profileFatherMobileInput">Father's Mobile No:</label>
+                <input type="text" id="profileFatherMobileInput">
+            </div>
+
+            <div class="form-row">
+                <label for="profileBloodGroupInput">Blood Group:</label>
+                <input type="text" id="profileBloodGroupInput">
+            </div>
+            <button id="updateProfileBtn" style="display: block;">Update Profile</button>
+            <button id="submitProfileBtn" style="display: none;">Submit</button>
+        </div>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const username = urlParams.get('username');
+
+            // Fetch the profile data from the server and display it in the HTML elements
+            fetchProfileData(username);
+
+            // Fetch the profile data from the server and display it in the HTML elements
+            // Fetch the profile data from the server and display it in the HTML elements
+            function fetchProfileData(username) {
+                // Send a GET request to the server to fetch the profile data
+                fetch(`http://localhost:5000/profile?username=${username}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (!data || Object.keys(data).length === 0) {
+                            throw new Error('Empty or malformed response');
+                        }
+                        populateProfileForm(data);
+                    })
+                    .catch(error => {
+                        console.error('Error fetching profile data:', error);
+                        alert('Error fetching profile data');
+                    });
+            }
+
+            function populateProfileForm(data) {
+                // Populate the frontend form with data received from the backend
+                document.getElementById("profileIDInput").value = data.Student_ID || '';
+                document.getElementById("profileNameInput").value = data.Student_Name || '';
+                document.getElementById("profileBranchInput").value = data.Branch || '';
+                document.getElementById("profileBatchInput").value = data.Batch || '';
+                document.getElementById("profileGenderInput").value = data.Gender || '';
+                document.getElementById("profileEmailInput").value = data.Email || '';
+                document.getElementById("profileCGPAInput").value = data.CGPA || '';
+                document.getElementById("profileAddressInput").value = data.Address || '';
+                document.getElementById("profileMotherNameInput").value = data.Mother_Name || '';
+                document.getElementById("profileFatherNameInput").value = data.Father_Name || '';
+                document.getElementById("profileFatherMobileInput").value = data.Father_Mobile || '';
+                document.getElementById("profileBloodGroupInput").value = data.Blood_Group || '';
+
+                const profilePhotoImg = document.querySelector("#profilePhotoContainer img");
+                if (data.Photo) {
+                    profilePhotoImg.src = data.Photo; // Set the source to the photo URL from data
+                    console.log(data.Photo);
+                } else {
+                    // If no photo available, display the FontAwesome user icon
+                    profilePhotoImg.src = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/svgs/regular/user.svg";
+                }
+                document.getElementById("updateProfileBtn").style.display = "inline-block";
+            }
+
+            document.getElementById("updateProfileBtn").addEventListener("click", function () {
+                // Make the form fields editable
+                toggleFormEditable(true);
+                // Show the submit button
+                document.getElementById("submitProfileBtn").style.display = "inline-block";
+                // Hide the update button
+                document.getElementById("updateProfileBtn").style.display = "none";
+            });
+            document.getElementById("submitProfileBtn").addEventListener("click", function () {
+                const username = sessionStorage.getItem('username'); // Get the username from sessionStorage
+                updateProfile(username); // Pass the username to the updateProfile function
+            });
+            toggleFormEditable(false);
+
+
+            function toggleFormEditable(editable) {
+                // Get all input fields in the form
+                const inputs = document.querySelectorAll("#profileForm input");
+                // Loop through each input field and toggle the readOnly attribute
+                inputs.forEach(input => {
+                    input.readOnly = !editable;
+                });
+
+            }
+            // Add an event listener for the "Update Profile" button in profile.html
+            function updateProfile(username) {
+                const updatedData = {
+                    Student_ID: document.getElementById('profileIDInput').value,
+                    // Student_Name: document.getElementById('profile-name-input').value,
+                    // Email: document.getElementById('profile-email-input').value,
+                    Address: document.getElementById('profileAddressInput').value,
+                    // Mother_Name: document.getElementById('profile-mother-name-input').value,
+                    // Father_Name: document.getElementById('profile-father-name-input').value,
+                    Father_Mobile: document.getElementById('profileFatherMobileInput').value,
+                    // Blood_Group: document.getElementById('profileBloodGroupInput').value,
+                };
+
+                // Send a PUT request to the server to update the profile data
+                fetch('http://localhost:5000/updateProfile', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(updatedData)
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        // Handle the response from the server, e.g., display a success message
+                        console.log('Profile updated successfully');
+                        // Reset the form fields to read-only state
+                        toggleFormEditable(false);
+                        // Hide the submit button
+                        document.getElementById("submitProfileBtn").style.display = "none";
+                        // Show the update button again
+                        document.getElementById("updateProfileBtn").style.display = "inline-block";
+                    })
+                    .catch(error => {
+                        console.error('Error updating profile:', error);
+                        // Handle errors, e.g., display an error message to the user
+                    });
+            }
+            const backButton = document.querySelector('.back-H-button');
+            backButton.addEventListener('click', function (event) {
+                event.preventDefault(); // Prevent the default action of the link
+                // Add your navigation logic here
+                window.history.back(); // Go back one step in the browser history
+            });
+        });
+    </script>
+</body>
+
+</html>
