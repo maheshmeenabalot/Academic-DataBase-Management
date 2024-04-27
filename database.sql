@@ -146,8 +146,8 @@ VALUES
 ('2306316', 'Liam', 'ME', 2023, 'Male', 'liam.23063@iitgoa.ac.in', 7.30, '890 Pine St, County', 'Karen Liam', 'Matthew Liam', '9876544040', '/photos/liam2.jpg', 'AB-');
 
 ----- Creating a table to store student details within the database-----
-DROP TABLE IF EXISTS students;
-CREATE TABLE IF NOT EXISTS students (
+DROP TABLE IF EXISTS student;
+CREATE TABLE IF NOT EXISTS student (
   Student_ID INT PRIMARY KEY NOT NULL,
   Student_Name varchar(50) NOT NULL,
   Branch varchar(50) NOT NULL,
@@ -157,7 +157,7 @@ CREATE TABLE IF NOT EXISTS students (
   CGPA FLOAT(4));
 
 ----- Inserting data into student table-----
-INSERT INTO students (Student_ID, Student_Name, Branch, Batch, Gender, Email, CGPA) VALUES
+INSERT INTO student (Student_ID, Student_Name, Branch, Batch, Gender, Email, CGPA) VALUES
 ('2003120', 'Mahesh', 'CSE', '2020', 'Male', 'mahesh.meena.20031@iitgoa.ac.in', 8.75),
 ('2003306', 'Aryan', 'MNC', '2020',	'Male', 'aryan.olkha.20033@iitgoa.ac.in', 7.50),
 ('2003319', 'Rajesh', 'MNC', '2020', 'Male', 'rajesh.meena.20033@iitgoa.ac.in', 9.92),
@@ -272,7 +272,7 @@ CREATE TABLE IF NOT EXISTS course_enrollment (
     Course_Code VARCHAR(50),
     Student_ID INT,
     FOREIGN KEY (Course_Code) REFERENCES courses(Course_Code),
-    FOREIGN KEY (Student_ID) REFERENCES students(Student_ID),
+    FOREIGN KEY (Student_ID) REFERENCES student(Student_ID),
     PRIMARY KEY (Enrollment_ID, Course_Code, Student_ID));
     
 SELECT * FROM course_enrollment
