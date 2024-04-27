@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Show Courses</title>
+<link rel="stylesheet" href="course_reg.css" />
+</head>
+<body>
+<div id="courseList"></div>
+
+<script>
+// Function to retrieve URL parameters
+function getUrlParameter(name) {
+    name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+    var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+    var results = regex.exec(location.search);
+    return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+}
+
+// Fetch courses list with grades
+function fetchCoursesList(studentId) {
+    fetch("http://localhost:5000/get_courses_with_grades", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ studentId: studentId })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        displayCourses(data);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+// Function to display courses with grades
+function displayCourses(courses) {
+    const courseListDiv = document.getElementById("courseList");
+    courseListDiv.innerHTML = ""; // Clear previous content
+
+    // Organize courses by semester and remove duplicates
+    const coursesBySemester = {};
+    courses.forEach(course => {
+        const semesters = course.Semester.split(' '); // Split semesters into an array
+        semesters.forEach(semester => {
+            if (!coursesBySemester[semester]) {
+                coursesBySemester[semester] = {};
+            }
+            // Only add the course if it hasn't been registered in this semester
+            if (!coursesBySemester[semester][course.Course_Code]) {
+                coursesBySemester[semester][course.Course_Code] = course;
+            }
+        });
+    });
+
+    // Iterate over semesters and display courses under each semester heading
+    for (const semester in coursesBySemester) {
+        const semesterCourses = Object.values(coursesBySemester[semester]);
+
+        // Create semester heading
+        const semesterHeading = document.createElement('h2');
+        semesterHeading.textContent = `Semester ${semester} Courses`;
+        courseListDiv.appendChild(semesterHeading);
+
+        // Create table for courses
+        const table = document.createElement('table');
+        table.innerHTML = `
+            <thead>
+                <tr>
+                    <th>Course Code</th>
+                    <th>Instructor Name</th>
+                    <th>Course Type</th>
+                    <th>Grade</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        `;
+        const tbody = table.querySelector('tbody');
+
+        // Populate table with courses
+        semesterCourses.forEach(course => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${course.Course_Code}</td>
+                <td>${course.Instructor_Name}</td>
+                <td>${course.Course_Type}</td>
+                <td>${course.grade}</td>
+            `;
+            tbody.appendChild(row);
+        });
+
+        courseListDiv.appendChild(table);
+    }
+}
+
+// Retrieve student ID from URL parameters
+const studentId = getUrlParameter('studentId');
+// Fetch and display courses
+fetchCoursesList(studentId);
+</script>
+
+</body>
+</html>

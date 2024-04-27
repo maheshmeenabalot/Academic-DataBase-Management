@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ID Card</title>
+  <style>  
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f0f0f0;
+    }
+    .id-card {
+      width: 700px;
+      height: 450px;
+      position: relative;
+      background-color: #8d88bb;
+      border: 2px solid #000;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+    
+
+    .institute-logo {
+      padding: 10px;
+      padding-bottom: 0%;
+      width: 90%;
+      height: auto;
+    }
+    .profile-photo {
+      padding: 0%;
+      width: 100px;
+      height: auto;
+      margin-top: 5px;
+    }
+    .id-card-content {
+      padding: 10px;
+    }
+    .id-card h2,
+    .id-card p {
+      margin: 2px 0;
+      color: black;
+      font-weight: bold; /* Make text bold */
+      overflow: hidden; /* Prevents text overflow */
+      text-overflow: ellipsis; /* Adds ellipsis (...) for overflowed text */
+      white-space: nowrap; /* Prevents text from wrapping */
+    }
+    hr {
+      margin: 2px 0;
+      border: none;
+      border-top: 2px solid #000;
+    } #backToHomeBtn {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: #272259; /* Green background */
+    border: none;
+    color: white; /* White text */
+    padding: 10px 20px; /* Padding */
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 12px;
+    cursor: pointer; /* Cursor on hover */
+    border-radius: 5px; /* Rounded corners */
+    transition: background-color 0.3s; /* Smooth transition */
+  }
+  
+    
+  </style>
+</head>
+<body>
+  <div class="id-card">
+    <img class="institute-logo" src="./Images/cropped-iit_goa.png" alt="Institute Logo">
+    <hr>
+    <div class="id-card-content">
+      <img class="profile-photo" src="./Images/Placeholder.png" alt="Profile Photo">
+      <p id="studentID">Student ID: </p>
+      <p id="studentName">Name: </p>
+      <p id="fatherMobile">Phone Number: </p>
+      <p id="bloodGroup">Blood Group: </p>
+      <p id="branch">Department: </p>
+    </div>
+  </div>
+  <button id="backToHomeBtn" style="position: absolute; top: 10px; left: 10px;">Back to Home</button>
+
+
+<script>document.addEventListener("DOMContentLoaded", function () {
+  // Retrieve student ID from URL query parameters
+  const urlParams = new URLSearchParams(window.location.search);
+  const userId = urlParams.get('username');
+
+  // Check if student ID exists
+  if (!userId) {
+      console.error('User ID not found in URL');
+      return;
+  }
+
+  fetchStudentData(userId)
+      .then(studentData => {
+          // Generate the ID card with the fetched student data
+          generateIDCard(studentData);
+      })
+      .catch(error => {
+          console.error('Error fetching student data:', error);
+      });
+
+  // Function to fetch student data from the backend API
+  function fetchStudentData(userId) {
+      const url = `http://localhost:5000/student/${userId}`;
+      return fetch(url)
+          .then(response => {
+              if (!response.ok) {
+                  throw new Error('Failed to fetch student data');
+              }
+              return response.json();
+          });
+  }
+
+  // Function to generate the ID card dynamically
+  function generateIDCard(studentData) {
+      // Update student details in the ID card
+      document.getElementById('studentID').textContent += studentData.Student_ID;
+      document.getElementById('studentName').textContent += studentData.Student_Name;
+      document.getElementById('fatherMobile').textContent += studentData.Father_Mobile;
+      document.getElementById('bloodGroup').textContent += studentData.Blood_Group;
+      document.getElementById('branch').textContent += studentData.Branch;
+  }
+  document.getElementById('backToHomeBtn').addEventListener('click', function() {
+          history.back(); // Go back to the previous page
+      });
+});
+
+</script>
+</body>
+</html>
