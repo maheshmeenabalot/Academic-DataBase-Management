@@ -2,16 +2,16 @@
 CREATE DATABASE College;
 USE College;
 
-DROP TABLE IF EXISTS Faculty;
+DROP TABLE IF EXISTS Instructor;
 -- Create the student table with personal data
-CREATE TABLE IF NOT EXISTS  Faculty (
-	Faculty_ID INT PRIMARY KEY NOT NULL,
-	Faculty_Name VARCHAR(50) NOT NULL UNIQUE,
-	Faculty_Email VARCHAR(50) NOT NULL,
+CREATE TABLE IF NOT EXISTS  Instructor (
+	Instructor_ID INT PRIMARY KEY NOT NULL,
+	Instructor_Name VARCHAR(50) NOT NULL UNIQUE,
+	Instructor_Email VARCHAR(50) NOT NULL,
     School VARCHAR(50) NOT NULL
 );
 
-INSERT INTO Faculty (Faculty_ID, Faculty_Name, Faculty_Email, School) VALUES
+INSERT INTO Instructor (Instructor_ID, Instructor_Name, Instructor_Email, School) VALUES
 ('180101', 'Dr. Clint', 'clint@iitgoa.ac.in', 'SMCS'),
 ('180102', 'Dr. Rahul', 'rahul@iitgoa.ac.in','SMCS' ),
 ('180201', 'Dr. Ram',	'ram@iitgoa.ac.in' ,'SES'),
@@ -35,9 +35,9 @@ INSERT INTO users (username, password_hash, email, role) VALUES
 ('2003120', 'mahesh', 'user1@iitgoa.ac.in', 'student'),
 ('2003306', 'aryan', 'user2@iitgoa.ac.in', 'student'),
 ('2003319', 'rajesh', 'user3@iitgoa.ac.in', 'student'),
-('rahul@iitgoa.ac.in', 'profrahul', 'rahul@iitgoa.ac.in', 'faculty'),
-('satya@iitgoa.ac.in', 'profsatya', 'satya@iitgoa.ac.in', 'faculty'),
-('client@iitgoa.ac.in', 'profclient', 'client@iitgoa.ac.in', 'faculty'),
+('rahul@iitgoa.ac.in', 'profrahul', 'rahul@iitgoa.ac.in', 'instructor'),
+('satya@iitgoa.ac.in', 'profsatya', 'satya@iitgoa.ac.in', 'instructor'),
+('client@iitgoa.ac.in', 'profclient', 'client@iitgoa.ac.in', 'instructor'),
 ('admin1', 'admin1pw', 'admin1@iitgoa.ac.in', 'admin'),
 ('admin2', 'admin2pw', 'admin2@iitgoa.ac.in', 'admin'),
 ('admin3', 'admin3pw', 'admin3@iitgoa.ac.in', 'admin');
@@ -159,12 +159,12 @@ CREATE TABLE IF NOT EXISTS student (
   Email varchar(50) NOT NULL,
   CGPA FLOAT(4),
   Faculty_Advisor varchar(50) NOT NULL,
-  Faculty_ID INT NOT NULL,
-  FOREIGN KEY (Faculty_Advisor) REFERENCES Faculty(Faculty_Name),
-  FOREIGN KEY (Faculty_ID) REFERENCES Faculty(Faculty_ID));
+  Instructor_ID INT NOT NULL,
+  FOREIGN KEY (Faculty_Advisor) REFERENCES Instructor(Instructor_Name),
+  FOREIGN KEY (Instructor_ID) REFERENCES Instructor(Instructor_ID));
 
 ----- Inserting data into student table-----
-INSERT INTO student (Student_ID, Student_Name, Branch, Batch, Gender, Email, CGPA, Faculty_Advisor, Faculty_ID) VALUES
+INSERT INTO student (Student_ID, Student_Name, Branch, Batch, Gender, Email, CGPA, Faculty_Advisor, Instructor_ID) VALUES
 ('2003120', 'Mahesh', 'CSE', '2020', 'Male', 'mahesh.meena.20031@iitgoa.ac.in', 8.75,'Dr. Clint', '180101'),
 ('2003306', 'Aryan', 'MNC', '2020',	'Male', 'aryan.olkha.20033@iitgoa.ac.in', 7.50, 'Dr. Rajeev', '190101' ),
 ('2003319', 'Rajesh', 'MNC', '2020', 'Male', 'rajesh.meena.20033@iitgoa.ac.in', 9.92, 'Dr. Rajeev', '190101'),
