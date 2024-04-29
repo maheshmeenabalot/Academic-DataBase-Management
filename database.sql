@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS users (
     username VARCHAR(50) NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
     email VARCHAR(50) NOT NULL,
-    role ENUM('student', 'instructor', 'admin') NOT NULL DEFAULT 'student'
+    role ENUM('student', 'faculty', 'admin') NOT NULL DEFAULT 'student'
 );
 
 -- Insert data into the users table with roles
@@ -35,9 +35,9 @@ INSERT INTO users (username, password_hash, email, role) VALUES
 ('2003120', 'mahesh', 'user1@iitgoa.ac.in', 'student'),
 ('2003306', 'aryan', 'user2@iitgoa.ac.in', 'student'),
 ('2003319', 'rajesh', 'user3@iitgoa.ac.in', 'student'),
-('rahul@iitgoa.ac.in', 'profrahul', 'rahul@iitgoa.ac.in', 'instructor'),
-('satya@iitgoa.ac.in', 'profsatya', 'satya@iitgoa.ac.in', 'instructor'),
-('client@iitgoa.ac.in', 'profclient', 'client@iitgoa.ac.in', 'instructor'),
+('rahul@iitgoa.ac.in', 'profrahul', 'rahul@iitgoa.ac.in', 'faculty'),
+('satya@iitgoa.ac.in', 'profsatya', 'satya@iitgoa.ac.in', 'faculty'),
+('client@iitgoa.ac.in', 'profclient', 'client@iitgoa.ac.in', 'faculty'),
 ('admin1', 'admin1pw', 'admin1@iitgoa.ac.in', 'admin'),
 ('admin2', 'admin2pw', 'admin2@iitgoa.ac.in', 'admin'),
 ('admin3', 'admin3pw', 'admin3@iitgoa.ac.in', 'admin');
