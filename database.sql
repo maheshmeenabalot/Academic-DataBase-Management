@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS users (
     username VARCHAR(50) NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
     email VARCHAR(50) NOT NULL,
-    role ENUM('student', 'faculty', 'admin') NOT NULL DEFAULT 'student'
+    role ENUM('student', 'instructor', 'admin') NOT NULL DEFAULT 'student'
 );
 
 -- Insert data into the users table with roles
