@@ -33,6 +33,19 @@ app.get("/", (req, res) => {
     res.send("working");
 });
 
+
+app.get('/course_reg', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'FrontEND', './Components/course_reg.html'));
+});
+
+app.get('/profile', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'FrontEND', './Components/profile.html'));
+});
+
+app.get('/add-Instructor', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'FrontEND', './Components/add-Instructor.html'));
+});
+
 app.get("/student", (req, res) => {
     pool.query('SELECT * FROM student', (err, results, fields) => {
         if (err) {
@@ -341,18 +354,6 @@ app.post("/submit-instructor", (req, res) => {
 
 
 
-
-app.get('/course_reg', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'FrontEND', './Components/course_reg.html'));
-});
-
-app.get('/profile', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'FrontEND', './Components/profile.html'));
-});
-
-app.get('/add-Instructor', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'FrontEND', './Components/add-Instructor.html'));
-});
 
 
 
