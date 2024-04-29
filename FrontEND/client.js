@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var InstList = document.querySelector('#InstList');
     var aboutUs = document.querySelector('#aboutUs');
     var studentDataContainer = document.getElementById('studentData');
-
+    
     var instructorsCourse = document.getElementById('instructorCourseList');
     var addStudeBtn = document.getElementById('addStudeBtn');
     var studentForm = document.getElementById('addstudentForm');
