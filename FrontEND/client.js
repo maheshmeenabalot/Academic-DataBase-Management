@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var FilterBtn = document.getElementById('filterBtn');
     var FilterForm = document.getElementById('filterForm');
     const searchInput = document.getElementById('searchbar');
-    var curr_sec = 0;
+
 
     var addCourseBtn = document.getElementById('addCourseBtn');
     var addInstructorBtn = document.getElementById('addInstructorBtn');
@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Event listeners for links
     studentsLink.addEventListener('click', function (event) {
         event.preventDefault();
-        curr_sec = 1;  // denote that we are in student section
+
         hideContainers();
         fetchStudentData();
         searchInput.value = '';
@@ -55,8 +55,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     coursesLink.addEventListener('click', function (event) {
         event.preventDefault();
-        // addCourseBtn.style.display = 'block';
-        curr_sec = 2;   // denote that we are in student section
+        // addCourseBtn.style.display = 'block';  
         hideContainers();
         studentDataContainer.style.display = 'block';
         fetchCourseData();
