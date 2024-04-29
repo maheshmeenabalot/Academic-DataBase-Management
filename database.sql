@@ -323,3 +323,14 @@ INSERT INTO grades (Student_ID, Course_Code, Grade) VALUES
 ('2003121', 'CS441', 'A+'),
 ('2003121', 'EE102', 'B');
     
+    
+CREATE TABLE Registration (
+  Student_ID INT NOT NULL,
+  Course_Code VARCHAR(20) NOT NULL,
+  Registration_Status ENUM('Pending', 'Approved', 'Rejected') NOT NULL DEFAULT 'Pending',
+  Registration_Date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  Instructor_ID INT NOT NULL,
+  Instructor_Comments TEXT,
+  FOREIGN KEY (Instructor_ID) REFERENCES instructor(Instructor_ID),
+  FOREIGN KEY (Student_ID) REFERENCES student_profile(Student_ID),
+  FOREIGN KEY (Course_Code) REFERENCES courses(Course_Code));
