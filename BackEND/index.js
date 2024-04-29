@@ -5,6 +5,7 @@ const path = require("path"); // Import path module
 const bodyParser = require("body-parser");
 app.use(cors());
 const router = express.Router();
+const pool = require('./db'); // Import the pool variable
 
 // Define your routes here
 router.get('/', (req, res) => {
@@ -18,7 +19,6 @@ app.use(express.static(path.join(__dirname, 'FrontEND')));
 // Export the router
 module.exports = router;
 
-const pool = require('./db'); // Import the pool variable
 
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
