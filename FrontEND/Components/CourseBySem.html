@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>View Registered Courses</title>
+  <style>
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      border: 1px solid #ddd;
+      padding: 8px;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Registered Courses for Semester <span id="semesterNumber"></span></h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Course Code</th>
+        <th>Instructor Name</th>
+        <th>Course Type</th>
+        <th>Credits</th>
+        <th>Grade</th>
+      </tr>
+    </thead>
+    <tbody id="coursesList">
+      <!-- Courses will be dynamically added here -->
+    </tbody>
+  </table>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const semester = urlParams.get('semester');
+
+      document.getElementById('semesterNumber').textContent = semester;
+      //     // <td>${course.grade}</td>''
+      const studentId = sessionStorage.getItem('username');
+      console.log(studentId);
+
+
+      fetch(`http://localhost:5000/get-registered-courses?semester=${semester}&studentId=${studentId}`)
+        .then(response => response.json())
+        .then(data => {
+          const coursesList = document.getElementById('coursesList');
+          coursesList.innerHTML = ''; // Clear existing rows
+          data.forEach(course => {
+            const row = `<tr>
+                <td>${course.Course_Code}</td>
+                <td>${course.Instructor_Name}</td>
+                <td>${course.Course_Type}</td>
+                <td>${course.Credit}</td>
+                <td>${course.Grade}</td>
+            </tr>`;
+            coursesList.innerHTML += row;
+          });
+        })
+        .catch(error => {
+          console.error('Failed to fetch courses:', error);
+          alert("Error fetching courses.");
+        });
+    });
+  </script>
+</body>
+
+</html>

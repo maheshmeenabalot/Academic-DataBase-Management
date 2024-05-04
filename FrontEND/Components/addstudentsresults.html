@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Results</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f8f8;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .result-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        #backBtn {
+            background-color: #3b416d;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+        }
+
+        #backBtn:hover {
+            background-color: #3e4c8a;
+        }
+    </style>
+</head>
+<body>
+    <div class="result-container">
+        <h1>Upload Results</h1>
+        <div id="successMessages" style="color: green; margin-bottom: 20px;"></div>
+        <div id="errorMessages" style="color: red; margin-bottom: 20px;"></div>
+        <button id="backBtn">Back</button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const results = JSON.parse(localStorage.getItem('results'));
+            const successMessages = document.getElementById('successMessages');
+            const errorMessages = document.getElementById('errorMessages');
+
+            // Display success and error messages
+            successMessages.innerHTML = results.success.join('<br>');
+            errorMessages.innerHTML = results.errors.join('<br>');
+
+            // Go back to the main page when back button is clicked
+            document.getElementById('backBtn').addEventListener('click', function() {
+                window.location.href = '../index.html';
+            });
+        });
+    </script>
+</body>
+</html>

@@ -2,280 +2,122 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Course Registration</title>
-  <link rel="stylesheet" href="course_reg.css" />
-  <style>/* Reset and general styles */
-    body, input, select, table, td, th {
-      font-family: Arial, sans-serif;
-      font-size: 14px;
-      line-height: 1.4;
-      margin: 0;
-      padding: 0;
-    }
-    
-    body {
-      background-color: #f2f2f2;
-      padding: 20px;
-    }
-    
-    a {
-      color: #007bff;
-      text-decoration: none;
-    }
-    
-    a:hover {
-      text-decoration: underline;
-    }
-    
-    /* Form styles */
-    form {
-      width: 100%;
-      max-width: 600px;
-      margin: 0 auto;
-      background-color: #fff;
-      padding: 20px;
-      border-radius: 4px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      box-sizing: border-box;
-    }
-    
-    label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: bold;
-    }
-    
-    input[type="text"],
-    select {
-      width: 100%;
-      padding: 8px;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Course Semester Selection</title>
+  <style>
+    .semester {
       border: 1px solid #ccc;
-      border-radius: 4px;
-      box-sizing: border-box;
-    }
-    
-    input[type="submit"] {
-      background-color: #4CAF50;
-      color: #fff;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-    
-    input[type="submit"]:hover {
-      background-color: #3e8e41;
-    }
-    
-    /* Table styles */
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-    
-    th,
-    td {
-      padding: 8px;
-      border-bottom: 1px solid #ddd;
-      text-align: left;
-    }
-    
-    th {
-      background-color: #4CAF50;
-      color: #fff;
-      font-weight: bold;
-    }
-    
-    tr:nth-child(even) {
-      background-color: #f2f2f2;
-    }
-    
-    /* Checkbox styles */
-    input[type="checkbox"] {
+      padding: 10px;
+      margin-bottom: 10px;
       cursor: pointer;
     }
-    
-    /* Hover effect */
-    tr:hover {
-      background-color: #f5f5f5;
+
+    .semester:hover {
+      background-color: #f0f0f0;
     }
-    
-    input[type="checkbox"]:hover {
-      cursor: pointer;
+
+    button {
+      margin-left: 10px;
     }
-    
-    input[type="checkbox"]:checked {
-      background-color: #4CAF50;
-    }
-    
-    /* Table header colors */
-    th:nth-child(1) { background-color: #4CAF50; }
-    th:nth-child(2) { background-color: #2E7D32; }
-    th:nth-child(3) { background-color: #1B5E20; }
-    th:nth-child(4) { background-color: #004D40; }
-    th:nth-child(5) { background-color: #00392B; }
-    
-    /* Back button */
-    .back-button {
-      display: inline-block;
-      padding: 10px 20px;
-      background-color: #007bff;
-      color: white;
-      text-decoration: none;
-      border-radius: 5px;
-      transition: background-color 0.3s ease;
-    }
-    
-    .back-button:hover {
-      background-color: #0056b3;
-    }
-    
-    </style>
+  </style>
 </head>
 
 <body>
-  <!-- Back button -->
   <a href="index.html" class="back-H-button">Back to Home</a>
+  <h1>Course Semester Selection</h1>
+  <div class="semester" id="semester1">
+    Semester 1
+    <button onclick="viewCourses(1)">View Courses</button>
+    <button onclick="registerCourses(1)">Register Courses</button>
+  </div>
+  <div class="semester" id="semester2">
+    Semester 2
+    <button onclick="viewCourses(2)">View Courses</button>
+    <button onclick="registerCourses(2)">Register Courses</button>
+  </div>
+  <div class="semester" id="semester3">
+    Semester 3
+    <button onclick="viewCourses(3)">View Courses</button>
+    <button onclick="registerCourses(3)">Register Courses</button>
+  </div>
+  <div class="semester" id="semester1">
+    Semester 4
+    <button onclick="viewCourses(4)">View Courses</button>
+    <button onclick="registerCourses(4)">Register Courses</button>
+  </div>
 
-  <h1>Course Registration</h1>
-  <form id="registrationForm">
-    <label for="Student_ID">Student ID:</label>
-    <input type="text" id="Student_ID" name="Student_ID" required /><br /><br />
+  <div class="semester" id="semester5">
+    Semester 5
+    <button onclick="viewCourses(5)">View Courses</button>
+    <button onclick="registerCourses(5)">Register Courses</button>
+  </div>
 
-    <label for="Department">Select Department:</label>
-    <select name="Department" id="Department">
-      <option value="">Select Department</option>
-      <option value="CSE">Computer Science and Engineering</option>
-      <option value="MnC">Mathematics and Computing</option>
-      <option value="EE">Electrical Engineering</option>
-      <option value="ME">Mechanical Engineering</option>
-    </select><br /><br />
+  <div class="semester" id="semester6">
+    Semester 6
+    <button onclick="viewCourses(6)">View Courses</button>
+    <button onclick="registerCourses(6)">Register Courses</button>
+  </div>
 
-    <label for="Semester">Select Semester:</label>
-    <select name="Semester" id="Semester">
-      <option value="">Select Semester</option>
-      <option value="1">Semester 1</option>
-      <option value="2">Semester 2</option>
-      <option value="3">Semester 3</option>
-      <option value="4">Semester 4</option>
-      <option value="5">Semester 5</option>
-      <option value="6">Semester 6</option>
-      <option value="7">Semester 7</option>
-      <option value="8">Semester 8</option>
-    </select><br /><br />
+  <div class="semester" id="semester7">
+    Semester 7
+    <button onclick="viewCourses(7)">View Courses</button>
+    <button onclick="registerCourses(7)">Register Courses</button>
+  </div>
+  <div class="semester" id="semester8">
+    Semester 8
+    <button onclick="viewCourses(8)">View Courses</button>
+    <button onclick="registerCourses(8)">Register Courses</button>
+  </div>
 
-    <table id="coursesTable" border="1">
-      <thead>
-        <tr>
-          <th>Course Code</th>
-          <th>Course Type</th>
-          <th>Instructor Name</th>
-          <th>Email</th>
-          <th>Select</th>
-          <!-- Added: Checkbox column -->
-        </tr>
-      </thead>
-      <tbody id="coursesBody"></tbody>
-    </table>
 
-    <input type="submit" value="Register" />
-  </form>
+  <!-- 
+  <div class="semester" onclick="selectSemester(1)">Semester 1</div>
+  <div class="semester" onclick="selectSemester(2)">Semester 2</div>
+  <div class="semester" onclick="selectSemester(3)">Semester 3</div>
+  <div class="semester" onclick="selectSemester(4)">Semester 4</div>
+  <div class="semester" onclick="selectSemester(5)">Semester 5</div>
+  <div class="semester" onclick="selectSemester(6)">Semester 6</div>
+  <div class="semester" onclick="selectSemester(7)">Semester 7</div>
+  <div class="semester" onclick="selectSemester(8)">Semester 8</div> -->
 
-  <!-- JavaScript code -->
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const Department = document.getElementById("Department");
-      const Semester = document.getElementById("Semester");
-      const coursesBody = document.getElementById("coursesBody");
-      const coursesTable = document.getElementById("coursesTable"); // Get reference to the table
+    // function selectSemester(semester) {
+    //   window.location.href = `Registration.html?semester=${semester}`;
+    // }
 
-      function updateCourses() {
-        const selectedDepartment = Department.value;
-        const selectedSemester = Semester.value;
+    // document.addEventListener("DOMContentLoaded", function () {
 
-        if (selectedDepartment && selectedSemester) {
-          fetch(`http://localhost:5000/get-reg-courses?Department=${selectedDepartment}&Semester=${selectedSemester}`)
-            .then(response => response.json())
-            .then(data => {
-              console.log("Fetched courses:", data.courses);
-              coursesBody.innerHTML = ""; // Clear previous courses
-              data.courses.forEach(course => {
-                const courseCode = course.Course_Code;
-                const courseType = course.Course_Type;
-                const instructorName = course.Instructor_Name;
-                const email = course.Email;
-                const row = `
-                  <tr>
-                    <td>${courseCode}</td>
-                    <td>${courseType}</td>
-                    <td>${instructorName}</td>
-                    <td>${email}</td>
-                    <td><input type="checkbox" name="selectedCourses" value="${courseCode}"></td>
-                  </tr>`;
-                coursesBody.innerHTML += row;
-              });
-              coursesTable.style.display = "table"; // Show the table
-            })
-            .catch(error => {
-              console.error("Error fetching courses:", error);
-            });
-        } else {
-          coursesTable.style.display = "none"; // Hide the table if department or semester is not selected
-        }
-      }
+    function viewCourses(semester) {
+      window.location.href = `CourseBySem.html?semester=${semester}`;
+    }
 
-      // Add event listeners
-      Department.addEventListener("change", updateCourses);
-      Semester.addEventListener("change", updateCourses);
-
-      document.getElementById("registrationForm").addEventListener("submit", function (event) {
-        event.preventDefault(); // Prevent the default form submission
-
-        const studentID = document.getElementById("Student_ID").value;
-
-        const selectedCourses = Array.from(document.querySelectorAll('input[name="selectedCourses"]:checked'))
-          .map(course => course.value);
-
-        const formData = {
-          Student_ID: studentID,
-          Course_Codes: selectedCourses
-        };
-
-        fetch('http://localhost:5000/submit-course-reg', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(formData)
+    function registerCourses(semester) {
+      fetch(`http://localhost:5000/check-registration-status?semester=${semester}`)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');  // Handle network errors specifically
+          }
+          return response.json();
         })
-          .then(response => {
-            if (!response.ok) {
-              throw new Error("Network response was not ok");
-            }
-            return response.text();
-          })
-          .then(data => {
-            console.log(data);
-            alert("Registration successful!");
-            // Refresh the page
-            location.reload();
-          })
-          .catch(error => {
-            console.error('Error:', error);
-            alert("Registration failed. Please try again later.");
-          });
-      });
-      const backButton = document.querySelector('.back-H-button');
-      backButton.addEventListener('click', function (event) {
-        event.preventDefault(); // Prevent the default action of the link
-        // Add your navigation logic here
-        window.history.back(); // Go back one step in the browser history
-      });
-    });
+        .then(data => {
+          console.log(data.isOpen);
+          if (data.isOpen) {
+            
+            
+            window.location.href = `Registration.html?semester=${semester}`;
+          } else {
+            alert("Registration for this semester is closed.");
+          }
+        })
+        .catch(error => {
+          console.error('Failed to check registration status:', error);
+          alert("Error checking registration status. Please try again later.");
+        });
+    }
+
+
+    // });
   </script>
 </body>
 

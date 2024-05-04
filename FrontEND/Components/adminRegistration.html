@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Registration Management</title>
+    <link rel="stylesheet" href="style.css"> <!-- Ensure you have this CSS file for styling -->
+</head>
+<body>
+    <h1>Admin Registration Management</h1>
+    <div id="registrationControls">
+        <form id="semesterRegistrationForm" onsubmit="saveRegistrationDates(event)">
+            <h2>Set Registration Period for Semesters</h2>
+            <label for="semester">Select Semester:</label>
+            <select id="semester" name="semester" required>
+                <option value="">Select Semester</option>
+                <option value="1">Semester 1</option>
+                <option value="2">Semester 2</option>
+                <option value="3">Semester 3</option>
+                <option value="4">Semester 4</option>
+                <option value="5">Semester 5</option>
+                <option value="6">Semester 6</option>
+                <option value="7">Semester 7</option>
+                <option value="8">Semester 8</option>
+                <!-- Add more semesters as needed -->
+            </select>
+
+            <label for="openDate">Registration Open Date:</label>
+            <input type="datetime-local" id="openDate" name="openDate" required>
+
+            <label for="closeDate">Registration Close Date:</label>
+            <input type="datetime-local" id="closeDate" name="closeDate" required>
+
+            <button type="submit">Save Dates</button>
+        </form>
+    </div>
+
+    <script>
+        function saveRegistrationDates(event) {
+            event.preventDefault(); // Prevent the form from submitting in the traditional way
+
+            const semester = document.getElementById('semester').value;
+            const openDate = document.getElementById('openDate').value;
+            const closeDate = document.getElementById('closeDate').value;
+
+            // Make sure the close date is after the open date
+            if (new Date(openDate) >= new Date(closeDate)) {
+                alert('The close date must be after the open date.');
+                return;
+            }
+
+            fetch('http://localhost:5000/set-registration-dates', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ semester, openDate, closeDate })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Registration dates updated successfully.');
+            })
+            .catch(error => {
+                console.error('Error updating registration dates:', error);
+                alert('Failed to update registration dates.');
+            });
+        }
+    </script>
+</body>
+</html>
