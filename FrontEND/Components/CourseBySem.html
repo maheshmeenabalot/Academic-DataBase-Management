@@ -20,10 +20,47 @@
     th {
       background-color: #f2f2f2;
     }
+    /* Basic styling for the button */
+#backToHomeBtn {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-family: 'Arial', sans-serif;
+    color: #fff;
+    background-color: #4f91ca;  /* Bootstrap primary blue */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Hover effect for the button */
+#backToHomeBtn:hover {
+    background-color: #0056b3; /* A darker shade of blue */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+/* Focus styles to maintain accessibility */
+#backToHomeBtn:focus {
+    outline: none;  /* Removes default outline styles */
+    box-shadow: 0 0 0 4px rgba(0,123,255,0.5); /* Glowing effect for focus */
+}
+
+/* Active state styles when the button is clicked */
+#backToHomeBtn:active {
+    background-color: #004085; /* Even darker shade when active */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2); /* Resetting shadow to normal */
+}
+
   </style>
 </head>
 
 <body>
+  <button id="backToHomeBtn" style="position: absolute; top: 10px; left: 10px;">Back to Home</button>
+  <br>
   <h1>Registered Courses for Semester <span id="semesterNumber"></span></h1>
   <table>
     <thead>
@@ -44,7 +81,9 @@
     document.addEventListener("DOMContentLoaded", () => {
       const urlParams = new URLSearchParams(window.location.search);
       const semester = urlParams.get('semester');
-
+      document.getElementById('backToHomeBtn').addEventListener('click', function () {
+        history.back(); // Go back to the previous page
+      });
       document.getElementById('semesterNumber').textContent = semester;
       //     // <td>${course.grade}</td>''
       const studentId = sessionStorage.getItem('username');

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instructor Dashboard</title>
+    <!-- <link rel="stylesheet" href="styles.css">  Ensure you have this CSS file for styling -->
+    <Style>
+        #requestsContainer div {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            margin-right: 5px;
+            padding: 5px 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            opacity: 0.8;
+        }
+    </Style>
+    <!-- Using Axios for easier HTTP requests -->
+</head>
+
+<body>
+    <h2>Instructor Dashboard</h2>
+    <div id="requestsContainer">
+        <!-- Registration requests will be populated here -->
+    </div>
+
+    <script>
+        // function updateRegistrationStatus(studentId, courseCode, status) {
+        //     console.log('Updating registration status:', studentId, courseCode, status);
+        //     // Implementation of the function
+
+        //     fetch(`${baseURL}/update-registration-status`, {
+        //         method: 'POST',
+        //         headers: {
+        //             'Content-Type': 'application/json'
+        //         },
+        //         body: JSON.stringify({ studentId, courseCode, status })
+        //     })
+        //         .then(response => {
+        //             if (!response.ok) {
+        //                 throw new Error('Failed to update registration status: ' + response.statusText);
+        //             }
+        //             return response.json();
+        //         })
+        //         .then(data => {
+        //             alert(data.message);
+        //             // Assuming you pass the instructorId to refetch updates
+        //             fetchRegistrationRequests(document.getElementById('instructorId').value);
+        //         })
+        //         .catch(error => {
+        //             console.error(error);
+        //             alert('Error updating registration status.');
+        //         });
+        // }
+        const baseURL = 'http://localhost:5000';  // Base URL for the API
+
+        function updateRegistrationStatus(studentId, courseCode, status) {
+            fetch(`${baseURL}/update-registration-status`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    studentId: studentId,
+                    courseCode: courseCode,
+                    status: status
+                })
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to update registration status: ' + response.statusText);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    alert(data.message);
+                    fetchRegistrationRequests(sessionStorage.getItem('instructorId'));
+                })
+                .catch(error => {
+                    console.error('Error updating registration status:', error);
+                    alert('Error updating registration status.');
+                });
+        }
+        document.addEventListener('DOMContentLoaded', function () {
+            const baseURL = 'http://localhost:5000';
+            const instructorEmail = sessionStorage.getItem('username');
+            console.log("Instructor Email:", instructorEmail);
+
+            if (!instructorEmail) {
+                console.error("No instructor email found in session storage.");
+                return;
+            }
+            fetchInstructorId(instructorEmail);
+            console.log('oaakay');
+            // fetchRegistrationRequests(180101);
+            // fetchInstructorId(instructorEmail);
+
+            function fetchInstructorId(email) {
+                const baseURL = 'http://localhost:5000'; // Ensure baseURL is defined
+
+                // Update the fetch URL to use path parameters instead of query parameters
+                fetch(`${baseURL}/get-instructor-id/${encodeURIComponent(email)}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error, status = ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.id) {  // Make sure to match the property name returned by your API
+                            console.log('Fetched Instructor ID:', data.id);
+                            fetchRegistrationRequests(data.id);
+                        } else {
+                            console.error('No instructor ID found');
+                        }
+                    })
+                    .catch(error => console.error('Error fetching instructor ID:', error));
+            }
+
+
+
+
+
+            function fetchRegistrationRequests(instructorId) {
+                fetch(`${baseURL}/get-registration-requests?instructorId=${instructorId}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Failed to fetch registration requests: ' + response.statusText);
+                        }
+                        return response.json();
+                    })
+                    .then(requests => populateRegistrationRequests(requests))
+                    .catch(error => {
+                        console.error(error);
+                        document.getElementById('requestsContainer').innerHTML = '<p>Error loading registration requests.</p>';
+                    });
+            }
+
+            function populateRegistrationRequests(requests) {
+                const container = document.getElementById('requestsContainer');
+                container.innerHTML = ''; // Clear previous entries
+
+                if (requests.length === 0) {
+                    container.innerHTML = '<p>No registration requests found.</p>';
+                    return;
+                }
+
+                requests.forEach(request => {
+                    const requestDiv = document.createElement('div');
+                    requestDiv.className = 'request';
+                    requestDiv.innerHTML = `
+                <p><strong>Course:</strong> (${request.Course_Code})</p>
+                <p><strong>Student ID:</strong> ${request.Student_ID}</p>
+                <p><strong>Status:</strong> ${request.Registration_Status}</p>
+                <button onclick="updateRegistrationStatus('${request.Student_ID}', '${request.Course_Code}', 'Approved')">Accept</button>
+                <button onclick="updateRegistrationStatus('${request.Student_ID}', '${request.Course_Code}', 'Rejected')">Reject</button>
+            `;
+                    container.appendChild(requestDiv);
+                });
+            }
+
+        });
+
+    </script>
+</body>
+
+</html>
