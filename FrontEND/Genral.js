@@ -9,9 +9,12 @@ document.addEventListener('DOMContentLoaded', function () {
     var loginContainer = document.querySelector('.loginContainer');
     var userDetailsContainer = document.getElementById('userDetailsContainer');
     var aboutUs = document.querySelector('#aboutUs');
+    var registrationButton = document.querySelector('#registrationButton');
     var viewCourse = document.querySelector('#instructor-Courses'); 
     var enrolledStudents = document.querySelector('#enrolledStudents');
-    //addstu
+    var addStudentsBtn = document.querySelector('#addStudentsBtn');
+    var StudRegButton = document.querySelector('#StudRegButton');
+    //addstu StudRegButton
     var addStudeBtnCont = document.getElementById('addStudeBtn');
 
     // Hide the "Add Student" button by default
@@ -56,6 +59,7 @@ document.addEventListener('DOMContentLoaded', function () {
         filterBtn.style.display = 'none';
         enrolledStudents.style.display = 'none';
         instructorList.style.display = 'none';
+        addStudentsBtn.style.display='none';
         document.getElementById('instructorCourseList').style.display = 'none';
         hideLoginContainer();
         hideHomeBottons();
@@ -71,6 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('instructorCourseList').style.display = 'none'
         addCourseBtn.style.display = 'none';
         instructorList.style.display = 'none';
+        addStudentsBtn.style.display='block';
         document.getElementById('enrolledStudents').style.display='none';
         hideLoginContainer();
         hideHomeBottons();
@@ -84,6 +89,7 @@ document.addEventListener('DOMContentLoaded', function () {
         showHomeBottons();
         document.getElementById('instructorCourseList').style.display = 'none'
         document.getElementById('enrolledStudents').style.display='none';
+        addStudentsBtn.style.display='none';
         
     });
 
@@ -92,6 +98,7 @@ document.addEventListener('DOMContentLoaded', function () {
         showSearchContainer();
         addCourseBtn.style.display = 'none';
         instructorList.style.display = 'block';
+        addStudentsBtn.style.display='none';
         hideLoginContainer();
         hideHomeBottons();
         document.getElementById('instructorCourseList').style.display = 'none'
@@ -111,6 +118,7 @@ document.addEventListener('DOMContentLoaded', function () {
         instructorList.style.display = 'none';
         document.getElementById('instructorCourseList').style.display = 'none'
         document.getElementById('enrolledStudents').style.display='none';
+        addStudentsBtn.style.display='none';
        
     });
 
@@ -124,9 +132,37 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('personalDetailsDropdown').style.display='none';
         document.getElementById('academicDetailsDropdown').style.display='none';  
         document.getElementById('instructorCourseList').style.display = 'none' 
+        addStudentsBtn.style.display='none';
         
        
     });
+    registrationButton.addEventListener('click', function (event) {
+        event.preventDefault();
+        hideLoginContainer();
+        hideContainers() ;
+        document.getElementById('instructorList').style.display='none';
+        document.getElementById('enrolledStudents').style.display='none';
+        document.getElementById('studentData').style.display='none';
+        document.getElementById('personalDetailsDropdown').style.display='none';
+        document.getElementById('academicDetailsDropdown').style.display='none';  
+        document.getElementById('instructorCourseList').style.display = 'none' 
+        
+       
+    });
+    StudRegButton.addEventListener('click', function (event) {
+        event.preventDefault();
+        hideLoginContainer();
+        hideContainers() ;
+        document.getElementById('instructorList').style.display='none';
+        document.getElementById('enrolledStudents').style.display='none';
+        document.getElementById('studentData').style.display='none';
+        document.getElementById('personalDetailsDropdown').style.display='none';
+        document.getElementById('academicDetailsDropdown').style.display='none';  
+        document.getElementById('instructorCourseList').style.display = 'none' 
+        
+       
+    });
+    
     viewCourse.addEventListener('click', function (event) {
         event.preventDefault();
         hideLoginContainer();
@@ -136,7 +172,8 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('studentData').style.display='none';
         document.getElementById('personalDetailsDropdown').style.display='none';
         document.getElementById('academicDetailsDropdown').style.display='none';   
-        document.getElementById('instructorCourseList').style.display = 'block' 
+        document.getElementById('instructorCourseList').style.display = 'block';
+        addStudentsBtn.style.display='none'; 
        
     });
     // Function to show search container

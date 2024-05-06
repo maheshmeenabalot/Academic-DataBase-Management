@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var InstList = document.querySelector('#InstList');
     var aboutUs = document.querySelector('#aboutUs');
     var studentDataContainer = document.getElementById('studentData');
-    
+    var registrationButton = document.querySelector('#registrationButton');
     var instructorsCourse = document.getElementById('instructorCourseList');
     var addStudeBtn = document.getElementById('addStudeBtn');
     var studentForm = document.getElementById('addstudentForm');
@@ -15,12 +15,19 @@ document.addEventListener('DOMContentLoaded', function () {
     var FilterBtn = document.getElementById('filterBtn');
     var FilterForm = document.getElementById('filterForm');
     const searchInput = document.getElementById('searchbar');
-
-
+    var curr_sec = 0;
+    
+    var StudRegButton = document.querySelector('#StudRegButton');
     var addCourseBtn = document.getElementById('addCourseBtn');
-    var addInstructorBtn = document.getElementById('addInstructorBtn');
+    var addinstructorBtn = document.getElementById('addinstructorBtn');
 
     var viewCourse = document.querySelector('#instructor-Courses');
+
+    const userType = sessionStorage.getItem('userType'); // Assuming userType is stored on login
+
+    if (userType === 'admin') {
+        document.getElementById('registrationButton').style.display = 'block';
+    }
 
 
     homeLink.addEventListener('click', function (event) {
@@ -30,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Event listeners for links
     studentsLink.addEventListener('click', function (event) {
         event.preventDefault();
-
+        curr_sec = 1;  // denote that we are in student section
         hideContainers();
         fetchStudentData();
         searchInput.value = '';
@@ -39,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function () {
         FilterBtn.style.display = 'block';
         enrolledStudentsContainer.style.display = 'none';
         addCourseBtn.style.display = 'none';
-        addInstructorBtn.style.display = 'none';
+        addinstructorBtn.style.display = 'none';
 
         const userType = sessionStorage.getItem('userType');
 
@@ -55,12 +62,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
     coursesLink.addEventListener('click', function (event) {
         event.preventDefault();
-        // addCourseBtn.style.display = 'block';  
+        // addCourseBtn.style.display = 'block';
+        curr_sec = 2;   // denote that we are in student section
         hideContainers();
         studentDataContainer.style.display = 'block';
         fetchCourseData();
         addStudeBtn.style.display = 'none';
-        addInstructorBtn.style.display = 'none';
+        addinstructorBtn.style.display = 'none';
 
         searchInput.value = '';
 
@@ -87,13 +95,13 @@ document.addEventListener('DOMContentLoaded', function () {
         addStudeBtn.style.display = 'none';
         addCourseBtn.style.display = 'none';
         FilterBtn.style.display = 'none';
-        addInstructorBtn.style.display = 'block';
+        addinstructorBtn.style.display = 'block';
         // searchInput.value = '';
-        fetchInstructors();
+        fetchinstructors();
         // urlParams = new URLSearchParams(window.location.search);
         // if (urlParams.has('refresh')) {
 
-        //     fetchInstructors(); // Refresh instructor table
+        //     fetchinstructors(); // Refresh instructor table
         // }
 
     });
@@ -102,7 +110,7 @@ document.addEventListener('DOMContentLoaded', function () {
         event.preventDefault();
         hideContainers();
         // searchInput.value = '';
-        // fetchInstructors();
+        // fetchinstructors();
         studentDataContainer.style.display = 'block';
 
         fetchViewCourseData();
@@ -139,10 +147,23 @@ document.addEventListener('DOMContentLoaded', function () {
         FilterForm.style.display = 'block';
     });
 
-    addInstructorBtn.addEventListener('click', function (event) {
+    addinstructorBtn.addEventListener('click', function (event) {
         event.preventDefault();
         hideContainers();
-        window.location.href = `add-Instructor.html`;
+        window.location.href = `add-instructor.html`;
+    });
+
+    registrationButton.addEventListener('click', function() {
+        hideContainers();
+        window.location.href = './Components/adminRegistration.html'; // URL of the admin registration management page
+
+
+    });
+
+    StudRegButton.addEventListener('click', function() {
+        hideContainers();
+        window.location.href = './Components/StudRegRequests.html'; // URL of the admin registration management page
+
     });
 
 
@@ -216,30 +237,30 @@ document.addEventListener('DOMContentLoaded', function () {
                 console.error('Error fetching courses data:', error);
             });
     }
-    function fetchInstructors() {
-        fetch('http://localhost:5000/instructors')
+    function fetchinstructors() {
+        fetch('http://localhost:5000/instructor')
             .then(response => response.json())
-            .then(instructors => {
+            .then(Instructors => {
                 const instructorList = document.getElementById('instructorList');
                 instructorList.innerHTML = ''; // Clear previous content
 
-                if (instructors.length === 0) {
+                if (Instructors.length === 0) {
                     instructorList.innerHTML = '<p>No instructors found.</p>';
                 } else {
                     const table = document.createElement('table');
                     table.innerHTML = `
                         <tr>
-                            <th>Instructor Name</th>
+                            <th>instructor Name</th>
                             <th>Email</th>
                             <th>School</th>
                         </tr>
                     `;
-                    instructors.forEach(instructor => {
+                    Instructors.forEach(Instructor => {
                         const row = document.createElement('tr');
                         row.innerHTML = `
-                            <td>${instructor.Instructor_Name}</td>
-                            <td>${instructor.Instructor_Email}</td>
-                            <td>${instructor.School}</td>
+                            <td>${Instructor.instructor_Name}</td>
+                            <td>${Instructor.instructor_Email}</td>
+                            <td>${Instructor.School}</td>
                         `;
                         table.appendChild(row);
                     });
@@ -557,7 +578,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Modify the generateStudentTable function to include pagination based on total entries
     function generateStudentTable(data) {
         var tableHtml = '<table border="1" id="studentTable">';
-        tableHtml += '<thead><tr><th>Student ID</th><th>Student Name</th><th>Branch</th><th>Batch</th><th>Gender</th><th>Email</th><th>CGPA</th></tr></thead>';
+        tableHtml += '<thead><tr><th>Student ID</th><th>Student Name</th><th>Branch</th><th>Batch</th><th>Gender</th><th>Email</th><th>CGPA</th><th>Faculty_Advisor</th></tr></thead>';
         tableHtml += '<tbody>';
 
         // Display 10 students per page
@@ -571,6 +592,7 @@ document.addEventListener('DOMContentLoaded', function () {
             tableHtml += '<td>' + student.Gender + '</td>';
             tableHtml += '<td>' + student.Email + '</td>';
             tableHtml += '<td>' + student.CGPA + '</td>';
+            tableHtml += '<td>' + student.Faculty_Advisor + '</td>';
             tableHtml += '</tr>';
         }
 
@@ -619,23 +641,41 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Function to generate course table HTML
+    // Function to generate the course table with buttons
     function generateCourseTable(data) {
         var tableHtml = '<table border="1">';
-        tableHtml += '<tr><th>Course Code</th><th>School</th><th>Instructor Name</th><th>Email</th><th>View Students</th></tr>';
+        tableHtml += '<tr><th>Course Code</th><th>School</th><th>instructor Name</th><th>Credit</th><th>View Students</th><th>Submit Grades</th></tr>';
         data.forEach(function (course, index) {
             var courseId = 'course_' + index;
             tableHtml += '<tr id="' + courseId + '">';
             tableHtml += '<td>' + course.Course_Code + '</td>';
             tableHtml += '<td>' + course.School + '</td>';
-            tableHtml += '<td>' + course.Instructor_Name + '</td>';
-            tableHtml += '<td>' + course.Email + '</td>';
+            tableHtml += '<td>' + course.instructor_Name + '</td>';
+            tableHtml += '<td>' + course.Credit + '</td>';
             tableHtml += '<td><button class="viewBtn">View</button></td>';
+            tableHtml += '<td><button class="submitGradesBtn" data-course="' + course.Course_Code + '">Update</button></td>';
             tableHtml += '</tr>';
         });
         tableHtml += '</table>';
-        tableHtml += '<style>.viewBtn { width:108px; }  </style>';
+        tableHtml += '<style>.viewBtn { width: 108px; }</style>';
         return tableHtml;
     }
+    
+    // Add event listener for Submit Grades button
+    document.addEventListener('click', function(event) {
+        var target = event.target;
+        if (target && target.classList.contains('submitGradesBtn')) {
+            var courseCode = target.getAttribute('data-course');
+            redirectToGradeSubmission(courseCode);
+        }
+    });
+    
+    // Function to redirect to gradesubmission.html with course code parameter
+    function redirectToGradeSubmission(courseCode) {
+        window.location.href = './Components/gradesubmission.html?course=' + courseCode;
+    }
+    
+    
 
     studentDataContainer.addEventListener('click', function (event) {
         if (event.target.classList.contains('viewBtn')) {
@@ -950,23 +990,29 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.querySelector('#InstList').style.display = "none";
                 document.querySelector('#instructor-Courses').style.display = "none";
                 document.querySelector('#aboutUs').style.display = "block";
+                document.getElementById('registrationButton').style.display = 'none';
+                document.getElementById('StudRegButton').style.display = 'none';
+                
 
                 break;
             case 'instructor':
                 console.log("Logged in as instructor");
-                // Show faculty-related UI elements
+                // Show instructor-related UI elements
                 document.querySelector('#std').style.display = "none";
                 document.querySelector('#homeLink').style.display = "none";
                 document.querySelector('#courses').style.display = "none";
                 queryLink.style.display = 'none';
                 document.getElementById('addStudeBtn').style.display = "none";
                 document.getElementById('addCourseBtn').style.display = "none";
-                document.getElementById('addInstructorBtn').style.display = "none";
+                document.getElementById('addinstructorBtn').style.display = "none";
                 document.querySelector('#instructor-Courses').style.display = "block";
                 document.querySelector('#InstList').style.display = "none";
                 document.querySelector('#aboutUs').style.display = "block";
                 document.getElementById('personalDetailsDropdown').style.display = 'none';
                 document.getElementById('academicDetailsDropdown').style.display = 'none';
+                document.getElementById('registrationButton').style.display = 'none';
+                document.getElementById('StudRegButton').style.display = 'block';
+                
 
                 break;
             case 'admin':
@@ -975,12 +1021,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.querySelector('#homeLink').style.display = "none";
                 document.getElementById('addStudeBtn').style.display = "block";
                 document.getElementById('addCourseBtn').style.display = "block";
-                document.getElementById('addInstructorBtn').style.display = "block";
+                document.getElementById('addinstructorBtn').style.display = "block";
                 document.querySelector('#InstList').style.display = "block";
                 document.querySelector('#instructor-Courses').style.display = "none";
                 document.querySelector('#aboutUs').style.display = "block";
                 document.getElementById('personalDetailsDropdown').style.display = 'none';
                 document.getElementById('academicDetailsDropdown').style.display = 'none';
+                document.getElementById('registrationButton').style.display = 'block';
+                document.getElementById('StudRegButton').style.display = 'none';
+
 
                 break;
             default:
@@ -1027,9 +1076,11 @@ document.getElementById('showcoursesBtn').addEventListener('click', function() {
         window.location.href = `./Components/showcourses.html?studentId=${username}`;
     } else {
         console.error('Username not found in sessionStorage');
-        // Handle the case where the username is not set in sessionStorage
-        // For example, display an error message or redirect to a login page
     }
+});
+
+document.getElementById('addStudentsBtn').addEventListener('click', function() {
+    window.location.href = "./Components/addstudents.html";
 });
 
 
@@ -1186,7 +1237,7 @@ function displayCourses(courses) {
             <thead>
                 <tr>
                     <th>Course Code</th>
-                    <th>Instructor Name</th>
+                    <th>instructor Name</th>
                     <th>Course Type</th>
                 </tr>
             </thead>
@@ -1199,7 +1250,7 @@ function displayCourses(courses) {
             const row = document.createElement('tr');
             row.innerHTML = `
                 <td>${course.Course_Code}</td>
-                <td>${course.Instructor_Name}</td>
+                <td>${course.instructor_Name}</td>
                 <td>${course.Course_Type}</td>
             `;
             tbody.appendChild(row);
@@ -1208,9 +1259,6 @@ function displayCourses(courses) {
         courseListDiv.appendChild(table);
     }
 }
-
-
-
 
 
 

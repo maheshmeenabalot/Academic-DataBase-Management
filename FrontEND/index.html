@@ -33,10 +33,13 @@
     <nav class="bottom-navbar">
         <a href="#" id="homeLink">Home</a>
         <a href="#" id="std" class="protected-content">Students</a>
-        <a href="#" id="InstList" class="protected-content" >Instructors</a>
+        <a href="#" id="InstList" class="protected-content" >instructors</a>
         <a href="#" id="courses" class="protected-content">Courses</a>
         <a href="#" id="queryLink" class="protected-content">Query</a>
         <a href="#" id="instructor-Courses" class="protected-content">View Courses</a>
+        <a href="#" id="registrationButton" class="protected-content" style="display:none;">Manage Registration</a>
+        <a href="#" id="StudRegButton" class="protected-content" style="display:none;">Student Requests</a>
+
         <a href="#" id="aboutUs" class="protected-content">About Us</a>
 
     </nav>
@@ -79,7 +82,7 @@
                 <select id="userType" name="userType">
                     <option value="student">Student</option>
                     <option value="admin">Admin</option>
-                    <option value="instructor">Instructor</option>
+                    <option value="instructor">instructor</option>
                 </select>
             </div>
             <button type="submit">Login</button>
@@ -94,12 +97,10 @@
             <!-- Your content goes here -->
             <button type="button" id="filterBtn">Filter</button>
             <button class="addstudent" id="addStudeBtn">Add Student</button>
+            <button class="addstudents" id="addStudentsBtn">Add students</button>
             <button class="addcourse" id="addCourseBtn">Add Course</button>
-            <button class="addInstructor" id="addInstructorBtn" style="display: none; ">Add Instructor</button>
+            <button class="addinstructor" id="addinstructorBtn" style="display: none; ">Add instructor</button>
         </div>
-
-
-
     </div>
 
     <div class="container" id="queryContainer" style="display: none;">
@@ -179,7 +180,7 @@
                 </select>
             </div>
             <div class="as-block">
-                <h3>Instructor Name</h3>
+                <h3>instructor Name</h3>
                 <input type="text" id="instructorName" name="instructorName" required><br>
             </div>
             <div class="as-block">
