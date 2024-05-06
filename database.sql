@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS  Instructor (
     School VARCHAR(50) NOT NULL
 );
 
-INSERT INTO Instructor (Instructor_ID, Instructor_Name, Instructor_Email, School) VALUES
+INSERT INTO Instructor (Instructor_ID, Instructor_Name,   , School) VALUES
 ('180101', 'Dr. Clint', 'clint@iitgoa.ac.in', 'SMCS'),
 ('180102', 'Dr. Rahul', 'rahul@iitgoa.ac.in','SMCS' ),
 ('180201', 'Dr. Ram',	'ram@iitgoa.ac.in' ,'SES'),
@@ -37,11 +37,11 @@ INSERT INTO users (username, password_hash, email, role) VALUES
 ('2003319', 'rajesh', 'user3@iitgoa.ac.in', 'student'),
 ('rahul@iitgoa.ac.in', 'profrahul', 'rahul@iitgoa.ac.in', 'instructor'),
 ('satya@iitgoa.ac.in', 'profsatya', 'satya@iitgoa.ac.in', 'instructor'),
-('client@iitgoa.ac.in', 'profclient', 'client@iitgoa.ac.in', 'instructor'),
+('clint@iitgoa.ac.in', 'profclient', 'clint@iitgoa.ac.in', 'instructor'),
+('rajeev@iitgoa.ac.in', 'profrajeev', 'rajeev@iitgoa.ac.in', 'instructor'),
 ('admin1', 'admin1pw', 'admin1@iitgoa.ac.in', 'admin'),
 ('admin2', 'admin2pw', 'admin2@iitgoa.ac.in', 'admin'),
 ('admin3', 'admin3pw', 'admin3@iitgoa.ac.in', 'admin');
-
 ----- Creating a table to store student details within the database-----
 DROP TABLE IF EXISTS student_profile;
 
@@ -278,6 +278,7 @@ CREATE TABLE IF NOT EXISTS course_enrollment (
 	Enrollment_ID INT AUTO_INCREMENT,
     Course_Code VARCHAR(50),
     Student_ID INT,
+    Semester INT,
     FOREIGN KEY (Course_Code) REFERENCES courses(Course_Code),
     FOREIGN KEY (Student_ID) REFERENCES student(Student_ID),
     PRIMARY KEY (Enrollment_ID, Course_Code, Student_ID));
@@ -285,15 +286,14 @@ CREATE TABLE IF NOT EXISTS course_enrollment (
 SELECT * FROM course_enrollment
 ORDER BY Enrollment_ID;
 
-INSERT INTO course_enrollment (Course_code, Student_ID) VALUES 
-('CS101', '2103116'),
-('CS101', '2003121'),
-('CS441', '2003120'),
-('CS441', '2003306'),
-('CS441', '2003319'),
-('CS441', '2003121'),
-('EE102', '2004220');
-
+INSERT INTO course_enrollment (Course_Code, Student_ID,Semester) VALUES 
+('CS101', '2103116',1),
+('CS101', '2003121',1),
+('CS441', '2003120',5),
+('CS441', '2003306',5),
+('CS441', '2003319',5),
+('CS441', '2003121',5),
+('EE102', '2004220',1);
 
 -- Drop the grading table if it exists
 DROP TABLE IF EXISTS grades;
@@ -322,7 +322,8 @@ INSERT INTO grades (Student_ID, Course_Code, Grade) VALUES
 ('2003121', 'CS101', 'A'),
 ('2003121', 'CS441', 'A+'),
 ('2003121', 'EE102', 'B');
-    
+
+
     
 CREATE TABLE Registration (
   Student_ID INT NOT NULL,
@@ -331,6 +332,7 @@ CREATE TABLE Registration (
   Registration_Date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   Instructor_ID INT NOT NULL,
   Instructor_Comments TEXT,
-  FOREIGN KEY (Instructor_ID) REFERENCES instructor(Instructor_ID),
+  Semester INT NOT NULL,
+  FOREIGN KEY (Instructor_ID) REFERENCES Instructor(Instructor_ID),
   FOREIGN KEY (Student_ID) REFERENCES student_profile(Student_ID),
   FOREIGN KEY (Course_Code) REFERENCES courses(Course_Code));
