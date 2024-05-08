@@ -25,24 +25,85 @@ app.use(express.static('public'));  // Serve static files from public directory
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'uploads/');  // Ensure this directory exists or is created
+        // Ensure the 'uploads' directory exists or is created
+        const uploadDir = 'Uploads/';
+        fs.mkdirSync(uploadDir, { recursive: true });
+
+        let dest;
+        const studentId = req.body.studentId; // Assuming studentId is part of the request body
+
+        // Determine the destination directory based on file type
+        if (file.mimetype === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+            // Grading excel sheets
+            dest = `${uploadDir}`;
+        } else {
+            // Scholarship documents
+            dest = `Uploads/ScholarshipUploads/${studentId}/`;
+            fs.mkdirSync(dest, { recursive: true });
+        }
+
+        // Callback with the destination directory
+        cb(null, dest);
     },
     filename: function (req, file, cb) {
+        // Generate a unique filename for each file
         const filename = `${Date.now()}-${file.originalname}`;
         cb(null, filename);
     }
 });
 
+const upload = multer({ storage: storage });
+
+// Endpoint to handle the scholarship form submission
+app.post('/submit-scholarship', upload.fields([
+    { name: 'salaryCertificate', maxCount: 1 },
+    { name: 'itr', maxCount: 1 },
+    { name: 'incomeCertificate', maxCount: 1 },
+    { name: 'incomeAffidavit', maxCount: 1 }
+]), (req, res) => {
+    console.log('Files uploaded:', req.files);
+    res.send("Scholarship application submitted successfully!");
+});
+
+app.use('/uploads', express.static(path.join(__dirname, 'uploads', 'ScholarshipUploads'), {
+    setHeaders: function (res, path) {
+        console.log("Serving:", path); // This will log the physical path attempts to access
+    }
+}));
+
+
+// New route to fetch all scholarship applications
+app.get('/applications', (req, res) => {
+    const applicationsPath = path.join(__dirname,'uploads', 'ScholarshipUploads');
+    fs.readdir(applicationsPath, (err, folders) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).send('Error retrieving applications.');
+        }
+        let applications = [];
+        folders.forEach(folder => {
+            let files = fs.readdirSync(path.join(applicationsPath, folder));
+            applications.push({ studentId: folder, files: files });
+        });
+        res.json(applications);
+    });
+});
+
+// Serve files from the 'uploads' directory, removing the case sensitivity issue
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+
+
+
+
 const corsOptions = {
-    origin: 'http://127.0.0.1:5500', // Allow requests from this origin
+    origin: 'http://127.0.0.1:5501', // Allow requests from this origin
     methods: 'POST', // Allow only POST requests
     optionsSuccessStatus: 200 // Respond with 200 for preflight requests
 };
 
 app.use(cors(corsOptions));
 
-
-const upload = multer({ storage: storage });
 
 app.post('/submit-grades', upload.single('gradesFile'), (req, res) => {
     const file = req.file;
@@ -143,6 +204,14 @@ app.post('/add-students', upload.single('studentsFile'), async (req, res) => {
         return res.status(500).send('Failed to process file.');
     }
 });
+
+
+//code for scholarship 
+app.use(express.static('public'));
+
+const fs = require('fs');
+
+
 // Export the router
 module.exports = router;
 
@@ -155,9 +224,6 @@ app.use(express.json());
 
 
 
-
-
-
 app.get('/contact', function (req, res) {
     res.render('contact', { qs: req.query });
 });
@@ -165,7 +231,6 @@ app.get('/contact', function (req, res) {
 app.get("/", (req, res) => {
     res.send("working");
 });
-
 
 app.get("/student", (req, res) => {
     pool.query('SELECT * FROM student', (err, results, fields) => {
@@ -451,7 +516,7 @@ const pool1 = mysql1.createPool({
     host: 'localhost',
     database: 'College',
     user: 'root',
-    password: 'Root@423'
+    password: '6350'
 });
 
 // 
