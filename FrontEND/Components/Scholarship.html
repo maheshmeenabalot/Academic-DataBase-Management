@@ -6,45 +6,139 @@
 <title>Scholarship Page</title>
 <style>
     body {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        margin: 0;
-    }
-    .content {
-        text-align: center;
-    }
-    #backToHomeBtn {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    background-color: #272259; /* Green background */
-    border: none;
-    color: white; /* White text */
-    padding: 10px 20px; /* Padding */
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #eef1f7;
+    color: #333;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    padding: 20px;
+}
+
+.content {
+    width: 100%;
+    max-width: 480px;
+    background: #fff;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    color: #2c3e50;
     text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 12px;
-    cursor: pointer; /* Cursor on hover */
-    border-radius: 5px; /* Rounded corners */
-    transition: background-color 0.3s; /* Smooth transition */
-  }
+    margin-bottom: 20px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+form div {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #555;
+}
+
+input[type="text"], input[type="file"] {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+button {
+    padding: 12px;
+    background-color: #4a77d4;
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+button:hover {
+    background-color: #3960a3;
+}
+
+#backToHomeBtn {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background-color: #555;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#backToHomeBtn:hover {
+    background-color: #333;
+}
+
+@media (max-width: 600px) {
+    .content {
+        padding: 20px;
+    }
+}
+
 </style>
 </head>
 <body>
     <button id="backToHomeBtn" style="position: absolute; top: 10px; left: 10px;">Back to Home</button>
-<div class="content">
-    <h1>Welcome to Our Scholarship Page</h1>
-    <p>There are currently no scholarship schemes available.</p>
-</div>
+    <div class="content">
+        <h1>Apply for a Scholarship</h1>
+        <p>Please upload all required documents to apply for the scholarship.</p>
+        <form action="http://localhost:5000/submit-scholarship" method="post" enctype="multipart/form-data">
+            <!-- Text input for Student ID -->
+            <div>
+                <label for="studentId">Student ID:</label>
+                <input type="text" id="studentId" name="studentId" required>
+            </div>
+    
+            <!-- File input for Salary Certificate -->
+            <div>
+                <label for="salaryCertificate">Salary Certificate:</label>
+                <input type="file" id="salaryCertificate" name="salaryCertificate" required>
+            </div>
+    
+            <!-- File input for ITR Document -->
+            <div>
+                <label for="itr">ITR Document:</label>
+                <input type="file" id="itr" name="itr" required>
+            </div>
+    
+            <!-- File input for Income Certificate -->
+            <div>
+                <label for="incomeCertificate">Income Certificate:</label>
+                <input type="file" id="incomeCertificate" name="incomeCertificate" required>
+            </div>
+    
+            <!-- File input for Income Affidavit -->
+            <div>
+                <label for="incomeAffidavit">Income Affidavit:</label>
+                <input type="file" id="incomeAffidavit" name="incomeAffidavit" required>
+            </div>
+    
+            <!-- Submit button -->
+            <button type="submit">Submit Application</button>
+        </form>
+    </div>    
 <script>document.addEventListener("DOMContentLoaded", function () {
-   
     document.getElementById('backToHomeBtn').addEventListener('click', function() {
-            history.back(); // Go back to the previous page
-        });
-  });
-  </script>
+        history.back(); // Go back to the previous page
+    });
+});
+</script>
 </body>
 </html>
