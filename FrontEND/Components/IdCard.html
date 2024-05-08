@@ -4,75 +4,82 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ID Card</title>
-  <style>  
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      background-color: #f0f0f0;
-    }
-    .id-card {
-      width: 700px;
-      height: 450px;
-      position: relative;
-      background-color: #8d88bb;
-      border: 2px solid #000;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      text-align: center;
-    }
-    
+  <style>body {
+    font-family: 'Lato', sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: radial-gradient(circle, #f5f7fa, #a8b6c8);
+}
 
-    .institute-logo {
-      padding: 10px;
-      padding-bottom: 0%;
-      width: 90%;
-      height: auto;
-    }
-    .profile-photo {
-      padding: 0%;
-      width: 100px;
-      height: auto;
-      margin-top: 5px;
-    }
-    .id-card-content {
-      padding: 10px;
-    }
-    .id-card h2,
-    .id-card p {
-      margin: 2px 0;
-      color: black;
-      font-weight: bold; /* Make text bold */
-      overflow: hidden; /* Prevents text overflow */
-      text-overflow: ellipsis; /* Adds ellipsis (...) for overflowed text */
-      white-space: nowrap; /* Prevents text from wrapping */
-    }
-    hr {
-      margin: 2px 0;
-      border: none;
-      border-top: 2px solid #000;
-    } #backToHomeBtn {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    background-color: #272259; /* Green background */
-    border: none;
-    color: white; /* White text */
-    padding: 10px 20px; /* Padding */
+.id-card {
+    width: 320px;
+    height: 500px;
+    background: linear-gradient(to right, #6a7fdb, #8a9dcf);
+    border-radius: 15px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.institute-logo {
+    width: 90%;
+    height: 80px;
+    margin: 0 auto;
+    background: linear-gradient(to right, #6a7fdb, #8a9dcf);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-bottom: 1px solid #ccc;
+}
+
+.profile-photo {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    margin: 20px auto;
+    border: 5px solid #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.id-card-content {
+    flex-grow: 1;
+    padding: 20px;
     text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 12px;
-    cursor: pointer; /* Cursor on hover */
-    border-radius: 5px; /* Rounded corners */
-    transition: background-color 0.3s; /* Smooth transition */
-  }
-  
-    
+}
+
+.id-card h2, .id-card p {
+    color: #333;
+    font-size: 16px;
+}
+
+hr {
+    border: none;
+    height: 2px;
+    background: #cccccc;
+    margin: 20px 0;
+}
+
+#backToHomeBtn {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background-color: #404040;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+#backToHomeBtn:hover {
+    background-color: #303030;
+}
+
   </style>
 </head>
 <body>

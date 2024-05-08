@@ -6,61 +6,78 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Course Semester Selection</title>
   <style>
-    .semester {
-      border: 1px solid #ccc;
-      padding: 10px;
-      margin-bottom: 10px;
-      cursor: pointer;
-    }
+    body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #e8f0fa;
+}
 
-    .semester:hover {
-      background-color: #f0f0f0;
-    }
+h1 {
+    color: #2C3E50;
+    margin: 20px;
+    font-size: 24px;
+}
 
-    button {
-      margin-left: 10px;
-    }
+.semester {
+    width: 90%;
+    max-width: 600px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 10px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
 
-    /* Basic styling for the button */
-    #backToHomeBtn {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      padding: 10px 20px;
-      font-size: 16px;
-      font-family: 'Arial', sans-serif;
-      color: #fff;
-      background-color: #007BFF;
-      /* Bootstrap primary blue */
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-      transition: background-color 0.3s ease, box-shadow 0.3s ease;
-    }
+.semester:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    background-color: #f8f9fa;
+}
 
-    /* Hover effect for the button */
-    #backToHomeBtn:hover {
-      background-color: #0056b3;
-      /* A darker shade of blue */
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    }
+button {
+    padding: 10px 15px;
+    font-size: 14px;
+    color: #fff;
+    background-color: #354170;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
 
-    /* Focus styles to maintain accessibility */
-    #backToHomeBtn:focus {
-      outline: none;
-      /* Removes default outline styles */
-      box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.5);
-      /* Glowing effect for focus */
-    }
+button:hover {
+    background-color: #424a87;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
 
-    /* Active state styles when the button is clicked */
-    #backToHomeBtn:active {
-      background-color: #004085;
-      /* Even darker shade when active */
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-      /* Resetting shadow to normal */
-    }
+#backToHomeBtn {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 14px;
+    background-color: #34495E;
+    color: white;
+    border-radius: 5px;
+    padding: 10px 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+#backToHomeBtn:hover {
+    background-color: #2C3E50;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
   </style>
 </head>
 
@@ -112,8 +129,23 @@
     <button onclick="registerCourses(8)">Register Courses</button>
   </div>
 
-  <script>
 
+  <!-- 
+  <div class="semester" onclick="selectSemester(1)">Semester 1</div>
+  <div class="semester" onclick="selectSemester(2)">Semester 2</div>
+  <div class="semester" onclick="selectSemester(3)">Semester 3</div>
+  <div class="semester" onclick="selectSemester(4)">Semester 4</div>
+  <div class="semester" onclick="selectSemester(5)">Semester 5</div>
+  <div class="semester" onclick="selectSemester(6)">Semester 6</div>
+  <div class="semester" onclick="selectSemester(7)">Semester 7</div>
+  <div class="semester" onclick="selectSemester(8)">Semester 8</div> -->
+
+  <script>
+    // function selectSemester(semester) {
+    //   window.location.href = `Registration.html?semester=${semester}`;
+    // }
+
+    // document.addEventListener("DOMContentLoaded", function () {
     document.getElementById('backToHomeBtn').addEventListener('click', function () {
       history.back(); // Go back to the previous page
     });

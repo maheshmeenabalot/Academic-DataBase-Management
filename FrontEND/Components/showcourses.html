@@ -1,111 +1,280 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Show Courses</title>
-<link rel="stylesheet" href="course_reg.css" />
-</head>
-<body>
-<div id="courseList"></div>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Show Courses</title>
 
-<script>
-// Function to retrieve URL parameters
-function getUrlParameter(name) {
-    name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
-    var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
-    var results = regex.exec(location.search);
-    return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
-}
-
-// Fetch courses list with grades
-function fetchCoursesList(studentId) {
-    fetch("http://localhost:5000/get_courses_with_grades", {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ studentId: studentId })
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
+    <style>
+        /* Style for the back to home button */
+        #backToHomeBtn {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: #272259;
+            /* Green background */
+            border: none;
+            color: white;
+            /* White text */
+            padding: 10px;
+            /* Padding */
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 12px;
+            cursor: pointer;
+            /* Cursor on hover */
+            border-radius: 5px;
+            /* Rounded corners */
+            transition: background-color 0.3s;
+            /* Smooth transition */
+            z-index: 1;
+            /* Ensure button is above other content */
         }
-        return response.json();
-    })
-    .then(data => {
-        displayCourses(data);
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
-}
 
-// Function to display courses with grades
-function displayCourses(courses) {
-    const courseListDiv = document.getElementById("courseList");
-    courseListDiv.innerHTML = ""; // Clear previous content
+        /* Style for the table container */
+        #courseList {
+            margin: 0 auto;
+            /* Center the container horizontally */
+            width: 80%;
+            /* Set a width for the container */
+            position: relative;
+            /* Add this position property */
+            top: 40px;
+            /* Adjust as needed to avoid overlap with the button */
+        }
 
-    // Organize courses by semester and remove duplicates
-    const coursesBySemester = {};
-    courses.forEach(course => {
-        const semesters = course.Semester.split(' '); // Split semesters into an array
-        semesters.forEach(semester => {
-            if (!coursesBySemester[semester]) {
-                coursesBySemester[semester] = {};
-            }
-            // Only add the course if it hasn't been registered in this semester
-            if (!coursesBySemester[semester][course.Course_Code]) {
-                coursesBySemester[semester][course.Course_Code] = course;
-            }
+        /* Style for the table */
+        table {
+            text-align: center;
+            width: 100%;
+            /* Make the table fill its container */
+            border-collapse: collapse;
+            border: 1px solid #818284;
+        }
+
+        /* Style for table header */
+        th {
+            background-color: #50688a;
+            padding: 10px;
+            border: 1px solid #818284;
+        }
+
+        /* Style for table cells */
+        td {
+            padding: 10px;
+            border: 1px solid #818284;
+        }
+
+        /* Style for table rows */
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        /* Hover effect for table rows */
+        tr:hover {
+            background-color: #f2f2f2;
+        }
+
+        .semester-heading {
+            display: flex;
+            justify-content: space-between;
+            /* Aligns items to justify space between them */
+            align-items: center;
+            /* Centers items vertically */
+            margin-top: 20px;
+            /* Optional: Adds some space above the semester heading */
+            padding: 10px;
+            /* Padding inside the rectangle */
+            background-color: #b7d1e7;
+            /* Light grey background color */
+            border-radius: 5px;
+            /* Rounded corners for a softer look */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            /* Subtle shadow for a lifted effect */
+            font-size: 18px;
+            /* Adjust size as necessary */
+            color: #333;
+            /* Dark grey color for text for better readability */
+        }
+
+        .semester-title {
+            font-weight: bold;
+            /* Bold font for the semester title */
+        }
+
+        .semester-spi {
+            background-color: #e9ecef;
+            /* Slightly darker grey for the SPI block for distinction */
+            padding: 5px 10px;
+            /* Padding around the SPI text */
+            border-radius: 5px;
+            /* Rounded corners for the SPI block */
+            font-weight: normal;
+            /* Normal weight for the SPI text */
+        }
+    </style>
+</head>
+
+<body>
+    <button id="backToHomeBtn" style="position: absolute; top: 10px; left: 10px;">Back</button>
+    <div id="courseList"></div>
+
+    <script>
+
+        document.addEventListener("DOMContentLoaded", () => {
+            document.getElementById('backToHomeBtn').addEventListener('click', function () {
+                history.back(); // Go back to the previous page
+            });
         });
-    });
+        // Function to retrieve URL parameters
+        function getUrlParameter(name) {
+            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+            var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+            var results = regex.exec(location.search);
+            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        }
 
-    // Iterate over semesters and display courses under each semester heading
-    for (const semester in coursesBySemester) {
-        const semesterCourses = Object.values(coursesBySemester[semester]);
+        // Fetch courses list with grades
+        function fetchCoursesList(studentId) {
+            fetch("http://localhost:5000/get_courses_with_grades", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ studentId: studentId })
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log(data);
+                    displayCourses(data);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
 
-        // Create semester heading
-        const semesterHeading = document.createElement('h2');
-        semesterHeading.textContent = `Semester ${semester} Courses`;
-        courseListDiv.appendChild(semesterHeading);
+        // Function to display courses with grades
+        // Function to display courses with grades
+        function displayCourses(courses) {
+            const courseListDiv = document.getElementById("courseList");
+            courseListDiv.innerHTML = "";  // Clear previous content
 
-        // Create table for courses
-        const table = document.createElement('table');
-        table.innerHTML = `
+
+            // const spi = calculateSPI(courses); // Calculate SPI
+            // const spiHeading = document.createElement('h2');
+            // spiHeading.textContent = `SPI: ${spi}`;
+            // courseListDiv.appendChild(spiHeading);
+
+            // Organize courses by semester
+            const coursesBySemester = {};
+            courses.forEach(course => {
+                console.log(course.Enrollment_Semester);
+                const semester = course.Enrollment_Semester;  // Assume semester comes directly and correctly from API
+                if (!coursesBySemester[semester]) {
+                    coursesBySemester[semester] = [];
+                    console.log("1", semester);
+                }
+                coursesBySemester[semester].push(course);
+            });
+
+            // Iterate over semesters and display courses under each semester heading
+            for (const semester in coursesBySemester) {
+                const semesterCourses = coursesBySemester[semester];
+                console.log("2", semester);
+                const spi = calculateSPI(semesterCourses);
+                // // Create semester heading
+                // const semesterHeading = document.createElement('h2');
+                // semesterHeading.textContent = `Semester ${semester} Courses`;
+                // courseListDiv.appendChild(semesterHeading);
+                const semesterHeading = document.createElement('div');
+                semesterHeading.className = 'semester-heading';
+
+                const title = document.createElement('span');
+                title.className = 'semester-title';
+                title.textContent = `Semester ${semester} Courses`;
+
+                const spiLabel = document.createElement('span');
+                spiLabel.className = 'semester-spi';
+                spiLabel.textContent = `SPI: ${spi}`;
+
+                semesterHeading.appendChild(title);
+                semesterHeading.appendChild(spiLabel);
+                courseListDiv.appendChild(semesterHeading);
+
+                // Create table for courses
+                const table = document.createElement('table');
+                table.innerHTML = `
             <thead>
                 <tr>
                     <th>Course Code</th>
                     <th>Instructor Name</th>
                     <th>Course Type</th>
+                    <th>Credit</th>
                     <th>Grade</th>
                 </tr>
             </thead>
             <tbody></tbody>
         `;
-        const tbody = table.querySelector('tbody');
+                const tbody = table.querySelector('tbody');
 
-        // Populate table with courses
-        semesterCourses.forEach(course => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
+                // Populate table with courses
+                semesterCourses.forEach(course => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
                 <td>${course.Course_Code}</td>
                 <td>${course.Instructor_Name}</td>
                 <td>${course.Course_Type}</td>
-                <td>${course.grade}</td>
+                <td>${course.Credit}</td>
+                <td>${course.Grade}</td>
             `;
-            tbody.appendChild(row);
-        });
+                    tbody.appendChild(row);
+                });
 
-        courseListDiv.appendChild(table);
-    }
-}
+                courseListDiv.appendChild(table);
+            }
+        }
 
-// Retrieve student ID from URL parameters
-const studentId = getUrlParameter('studentId');
-// Fetch and display courses
-fetchCoursesList(studentId);
-</script>
+        function convertGradeToPoints(grade) {
+            const gradeMap = {
+                'A+': 10,
+                'A': 9,
+                'B+': 8,
+                'B': 7,
+                'C+': 6,
+                'C': 5,
+                'D': 4,
+                'E': 0,
+                'F': 0
+            };
+            return gradeMap[grade] || 0; // Defaults to 0 if grade is unrecognized
+        }
+        function calculateSPI(courses) {
+            let totalPoints = 0;
+            let totalCredits = 0;
+            courses.forEach(course => {
+                const credits = parseFloat(course.Credit);
+                const gradePoints = convertGradeToPoints(course.Grade);
+                totalCredits += credits;
+                totalPoints += credits * gradePoints;
+            });
+            return totalCredits > 0 ? (totalPoints / totalCredits).toFixed(2) : 'N/A';  // Rounded to two decimal places
+        }
+
+
+
+        // Retrieve student ID from URL parameters
+        const studentId = getUrlParameter('studentId');
+        // Fetch and display courses
+        fetchCoursesList(studentId);
+    </script>
 
 </body>
+
 </html>

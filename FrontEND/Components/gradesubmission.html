@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grade Submission</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f8f8;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        form {
+            text-align: center;
+            
+        }
+
+        input[type="file"], button[type="submit"] {
+            align-items: center;
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border: none;
+        }
+
+        button[type="submit"] {
+            background-color: #3b416d;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #3e4c8a;
+        }
+
+        #backToHomeBtn {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: #272259; /* Green background */
+            border: none;
+            color: white; /* White text */
+            padding: 10px 20px; /* Padding */
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 12px;
+            cursor: pointer; /* Cursor on hover */
+            border-radius: 5px; /* Rounded corners */
+            transition: background-color 0.3s; /* Smooth transition */
+        }
+        
+
+    </style>
+</head>
+<body>
+    <button id="backToHomeBtn" style="position: absolute; top: 10px; left: 10px;">Back to Home</button>
+    <div class="container">
+        <h1>Grade Submission</h1>
+        <form id="gradeSubmissionForm" enctype="multipart/form-data">
+            <input type="file" id="gradesFile" name="gradesFile" accept=".xlsx, .xls" required>
+            <input type="hidden" id="courseCode" name="courseCode">
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('gradeSubmissionForm');
+            const queryParams = new URLSearchParams(window.location.search);
+            const courseCode = queryParams.get('course');
+            document.getElementById('courseCode').value = courseCode;
+
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+                const formData = new FormData(form);
+                fetch('http://localhost:5000/submit-grades', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.text())
+                .then(data => {
+                    alert(data);
+                    form.reset();
+                })
+                .catch(error => {
+                    console.error('Error submitting grades:', error);
+                    alert('Error submitting grades. Please try again.');
+                });
+            });
+            document.getElementById('backToHomeBtn').addEventListener('click', function() {
+          history.back(); // Go back to the previous page
+        });
+        });
+    </script>
+</body>
+</html>

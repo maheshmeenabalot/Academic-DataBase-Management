@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Instructor</title>
+    <!-- Include any necessary CSS files -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        #addinstructorForm {
+            max-width: 400px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        input[type="text"],
+        input[type="email"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #3e8e41;
+        }
+
+        .back-H-button {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .back-H-button::before {
+            content: '«';
+            font-size: 20px;
+        }
+
+        .back-H-button:hover {
+            background-color: #3e8e41;
+        }
+
+        /* Add some styling to the dropdown menu */
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <a href="index.html" class="back-H-button">Back to Home</a>
+    <h2>Add Instructor</h2>
+
+    <form id="addinstructorForm">
+        <label for="instructorName">Name:</label><br>
+        <input type="text" id="instructorName" name="instructorName" required><br>
+
+        <label for="instructorEmail">Email:</label><br>
+        <input type="email" id="instructorEmail" name="instructorEmail" required><br>
+
+        <label for="school">School:</label><br>
+        <select id="school" name="school" required>
+            <option value="">Select a school</option>
+            <option value="SMCS">SMCS</option>
+            <option value="SES">SES</option>
+            <option value="SMS">SMS</option>
+            <option value="SHSS">SHSS</option>
+        </select><br>
+
+        <input type="submit" value="Submit">
+    </form>
+
+    <!-- Include any necessary JavaScript files -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const instructorForm = document.getElementById('addinstructorForm');
+
+            instructorForm.addEventListener('submit', function (event) {
+                event.preventDefault();
+
+                const formData = new FormData(instructorForm);
+                const instructorName = formData.get('instructorName');
+                const instructorEmail = formData.get('instructorEmail');
+                const school = formData.get('school');
+
+                // Call the function to add instructor to the database
+                addInstructorToDatabase(instructorName, instructorEmail, school);
+
+                console.log('Name:', instructorName);
+                console.log('Email:', instructorEmail);
+                console.log('School:', school);
+
+                // Optionally, you can redirect the user or show a confirmation message here
+            });
+
+            function addInstructorToDatabase(instructorName, instructorEmail, school) {
+                var url = 'http://localhost:5000/submit-instructor';
+                var data = {
+                    instructorName: instructorName,
+                    instructorEmail: instructorEmail,
+                    school: school
+                };
+
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Failed to add instructor');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('Instructor added successfully:', data);
+                        const result = window.confirm('Instructor added successfully. Do you want to add another instructor?');
+                        if (result) {
+                            console.log('Add another instructor');
+                            document.getElementById("addinstructorForm").reset();
+                        } else {
+                            console.log('Operation cancelled');
+                            window.location.href = 'index.html?refresh=true';
+
+                            // instructorForm.style.display = 'none';
+                            // addButton.style.display = 'block';
+                        }
+                        // fetchInstructorData(); // Refresh instructor table
+                        // showSearchContainer();
+                    })
+                    .catch(error => {
+                        console.error('Error adding instructor:', error);
+                        const result = window.confirm('Failed to add instructor. Do you want to retry?');
+                        if (result) {
+                            console.log('Add another instructor');
+                            document.getElementById("addinstructorForm").reset();
+                            // showSearchContainer();
+                            // showAddInstructorButtonContainer();
+                        } else {
+                            console.log('Operation cancelled');
+                            // instructorForm.style.display = 'none';
+                            // fetchInstructorData();
+
+                        }
+                    });
+            }
+            const backButton = document.querySelector('.back-H-button');
+            backButton.addEventListener('click', function (event) {
+                event.preventDefault(); // Prevent the default action of the link
+                // Add your navigation logic here
+                window.history.back(); // Go back one step in the browser history
+            });
+        });
+    </script>
+
+</body>
+
+</html>
