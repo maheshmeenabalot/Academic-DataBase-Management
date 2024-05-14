@@ -55,6 +55,11 @@ input[type="text"], input[type="file"] {
     font-size: 14px;
 }
 
+input[readonly] {
+    background-color: #f3f4f6;
+    cursor: not-allowed;
+}
+
 button {
     padding: 12px;
     background-color: #4a77d4;
@@ -101,9 +106,10 @@ button:hover {
         <p>Please upload all required documents to apply for the scholarship.</p>
         <form action="http://localhost:5000/submit-scholarship" method="post" enctype="multipart/form-data">
             <!-- Text input for Student ID -->
+            
             <div>
                 <label for="studentId">Student ID:</label>
-                <input type="text" id="studentId" name="studentId" required>
+                <input type="text" id="studentId" name="studentId" required readonly>
             </div>
     
             <!-- File input for Salary Certificate -->
@@ -134,11 +140,30 @@ button:hover {
             <button type="submit">Submit Application</button>
         </form>
     </div>    
-<script>document.addEventListener("DOMContentLoaded", function () {
-    document.getElementById('backToHomeBtn').addEventListener('click', function() {
-        history.back(); // Go back to the previous page
-    });
-});
-</script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Function to get query parameters by name
+            function getQueryParam(name) {
+                name = name.replace(/[\[\]]/g, '\\$&');
+                var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+                    results = regex.exec(window.location.href);
+                if (!results) return null;
+                if (!results[2]) return '';
+                return decodeURIComponent(results[2].replace(/\+/g, ' '));
+            }
+        
+            // Set the student ID from the query parameter
+            const username = getQueryParam('username');
+            if(username) {
+                document.getElementById('studentId').value = username;
+            }
+        
+            // Event listener for the Back to Home button
+            document.getElementById('backToHomeBtn').addEventListener('click', function() {
+                history.back(); // Go back to the previous page
+            });
+        });
+        </script>
+        
 </body>
 </html>

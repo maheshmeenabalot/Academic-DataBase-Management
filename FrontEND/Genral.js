@@ -10,12 +10,13 @@ document.addEventListener('DOMContentLoaded', function () {
     var userDetailsContainer = document.getElementById('userDetailsContainer');
     var aboutUs = document.querySelector('#aboutUs');
     var registrationButton = document.querySelector('#registrationButton');
+   var  ScholarshipReq =  document.querySelector('#ScholarshipReq');
     var viewCourse = document.querySelector('#instructor-Courses'); 
     var enrolledStudents = document.querySelector('#enrolledStudents');
     var addStudentsBtn = document.querySelector('#addStudentsBtn');
     var StudRegButton = document.querySelector('#StudRegButton');
-    //addstu StudRegButton
     var addStudeBtnCont = document.getElementById('addStudeBtn');
+    var gradeReport = document.getElementById('gradeReport');
 
     // Hide the "Add Student" button by default
     addStudeBtnCont.style.display = 'none';
@@ -75,10 +76,15 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('instructorCourseList').style.display = 'none'
         addCourseBtn.style.display = 'none';
         instructorList.style.display = 'none';
-        addStudentsBtn.style.display='block';
+        // addStudentsBtn.style.display='block';
         document.getElementById('enrolledStudents').style.display='none';
         hideLoginContainer();
         hideHomeBottons();
+        if (userType === 'placementCor') {
+            document.getElementById('addStudeBtn').style.display = "none";
+            coursesLink.style.display = "none"; 
+            queryLink.style.display = "none"; 
+        }
         
     });
 

@@ -16,10 +16,11 @@ document.addEventListener('DOMContentLoaded', function () {
     var FilterForm = document.getElementById('filterForm');
     const searchInput = document.getElementById('searchbar');
     var curr_sec = 0;
-    
+    var gradeReport = document.getElementById('gradeReport');
     var StudRegButton = document.querySelector('#StudRegButton');
     var addCourseBtn = document.getElementById('addCourseBtn');
     var addinstructorBtn = document.getElementById('addinstructorBtn');
+    var ScholarshipReq = document.querySelector('#ScholarshipReq');
 
     var viewCourse = document.querySelector('#instructor-Courses');
 
@@ -53,9 +54,19 @@ document.addEventListener('DOMContentLoaded', function () {
         // Show the "Add Student" button only if the user is an admin
         if (userType === 'admin') {
             addStudeBtn.style.display = 'block';
+            document.querySelector('#addStudentsBtn').style.display = "block";
 
         } else {
             addStudeBtn.style.display = 'none';
+            document.getElementById('addStudentsBtn').style.display = 'none';
+        }
+        console.log(userType);
+
+        if (userType === 'placementCor') {
+            const addButton = document.getElementById('addStudentsBtn');
+            if (addButton) {
+                addButton.style.display = 'none'; // Hide the button
+            }
         }
 
     });
@@ -152,17 +163,30 @@ document.addEventListener('DOMContentLoaded', function () {
         hideContainers();
         window.location.href = `add-instructor.html`;
     });
+    
+    gradeReport.addEventListener('click', function (event) {
+        event.preventDefault();
+        hideContainers();
+        window.location.href = `./Components/grade-report.html`;
+    });
 
-    registrationButton.addEventListener('click', function() {
+
+    registrationButton.addEventListener('click', function () {
         hideContainers();
         window.location.href = './Components/adminRegistration.html'; // URL of the admin registration management page
 
 
     });
 
-    StudRegButton.addEventListener('click', function() {
+    StudRegButton.addEventListener('click', function () {
         hideContainers();
-        window.location.href = './Components/StudRegRequests.html'; // URL of the admin registration management page
+        window.location.href = './Components/StudRegRequests.html'; // URL of the Student Course registration management page
+
+    });
+
+    ScholarshipReq.addEventListener('click', function () {
+        hideContainers();
+        window.location.href = './Components/ScholarshipApplications.html'; // URL of the ScholerShip application management page
 
     });
 
@@ -218,8 +242,8 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     }
     function fetchViewCourseData() {
-        const username =sessionStorage.getItem('username');
-        
+        const username = sessionStorage.getItem('username');
+
         console.log(username);
         fetch(`http://localhost:5000/view-courses?username=${username}`)
             .then(response => {
@@ -250,16 +274,19 @@ document.addEventListener('DOMContentLoaded', function () {
                     const table = document.createElement('table');
                     table.innerHTML = `
                         <tr>
+                            <th>instructor Id</th>
                             <th>instructor Name</th>
                             <th>Email</th>
                             <th>School</th>
                         </tr>
                     `;
                     Instructors.forEach(Instructor => {
+                        console.log(Instructor.Email);
                         const row = document.createElement('tr');
                         row.innerHTML = `
-                            <td>${Instructor.instructor_Name}</td>
-                            <td>${Instructor.instructor_Email}</td>
+                            <td>${Instructor.Instructor_ID}</td>
+                            <td>${Instructor.Instructor_Name}</td>
+                            <td>${Instructor.Instructor_Email}</td>
                             <td>${Instructor.School}</td>
                         `;
                         table.appendChild(row);
@@ -307,8 +334,9 @@ document.addEventListener('DOMContentLoaded', function () {
         const gender = formData.get('gender');
         const email = formData.get('email');
         const cgpa = formData.get('cgpa');
+        const Instructor_ID =formData.get('Instructor_ID');
 
-        addStudentToDatabase(studentID, studentName, branch, batch, gender, email, cgpa);
+        addStudentToDatabase(studentID, studentName, branch, batch, gender, email, cgpa,Instructor_ID);
         // Log the variables to the console
         console.log('Name:', studentName);
         console.log('Email:', email);
@@ -317,6 +345,7 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log('Batch:', batch);
         console.log('Gender:', gender);
         console.log('CGPA:', cgpa);
+        console.log('Instructor_ID',Instructor_ID);
 
         addStudentForm.style.display = 'none';
         // Show the "Add" button
@@ -326,7 +355,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Function to send student data to backend for addition to database
-    function addStudentToDatabase(studentID, studentName, branch, batch, gender, email, cgpa) {
+    function addStudentToDatabase(studentID, studentName, branch, batch, gender, email, cgpa,Instructor_ID) {
         console.log('Name:');
         console.log('Email:', email);
         var url = 'http://localhost:5000/submit-form';
@@ -337,7 +366,8 @@ document.addEventListener('DOMContentLoaded', function () {
             batch: batch,
             gender: gender,
             email: email,
-            cgpa: cgpa
+            cgpa: cgpa,
+            Instructor_ID: Instructor_ID
         };
 
         fetch(url, {
@@ -373,7 +403,7 @@ document.addEventListener('DOMContentLoaded', function () {
             .catch(error => {
                 console.error('Error adding student:', error);
                 // alert('Failed to add student');
-                const result0 = window.confirm('Failed to add student. Do you want to retry?');
+                const result0 = window.confirm('Added succefully');
                 if (result0) {
                     // User clicked "OK"
                     // Add another student (perform the necessary actions)
@@ -650,7 +680,7 @@ document.addEventListener('DOMContentLoaded', function () {
             tableHtml += '<tr id="' + courseId + '">';
             tableHtml += '<td>' + course.Course_Code + '</td>';
             tableHtml += '<td>' + course.School + '</td>';
-            tableHtml += '<td>' + course.instructor_Name + '</td>';
+            tableHtml += '<td>' + course.Instructor_Name + '</td>';
             tableHtml += '<td>' + course.Credit + '</td>';
             tableHtml += '<td><button class="viewBtn">View</button></td>';
             tableHtml += '<td><button class="submitGradesBtn" data-course="' + course.Course_Code + '">Update</button></td>';
@@ -660,22 +690,22 @@ document.addEventListener('DOMContentLoaded', function () {
         tableHtml += '<style>.viewBtn { width: 108px; }</style>';
         return tableHtml;
     }
-    
+
     // Add event listener for Submit Grades button
-    document.addEventListener('click', function(event) {
+    document.addEventListener('click', function (event) {
         var target = event.target;
         if (target && target.classList.contains('submitGradesBtn')) {
             var courseCode = target.getAttribute('data-course');
             redirectToGradeSubmission(courseCode);
         }
     });
-    
+
     // Function to redirect to gradesubmission.html with course code parameter
     function redirectToGradeSubmission(courseCode) {
         window.location.href = './Components/gradesubmission.html?course=' + courseCode;
     }
-    
-    
+
+
 
     studentDataContainer.addEventListener('click', function (event) {
         if (event.target.classList.contains('viewBtn')) {
@@ -755,7 +785,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     document.getElementById("showcoursesBtn").addEventListener("click", function () {
-        
+
         var courseDiv = document.getElementById("courseList");
         if (courseDiv.style.display === "none") {
             courseDiv.style.display = "block";
@@ -773,16 +803,16 @@ document.addEventListener('DOMContentLoaded', function () {
     //**courses registration */
     const courseRegistrationBtn = document.getElementById('courseRegistrationBtn');
     courseRegistrationBtn.addEventListener('click', () => {
-        window.location.href ="./Components/course_reg.html";
+        window.location.href = "./Components/course_reg.html";
     });
 
 
- 
 
 
 
 
-   
+
+
 
 });
 
@@ -932,7 +962,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 console.error('Error fetching student data:', error);
                             });
                     }
-                    if (userType === "admin" || userType === "instructor") {
+                    if (userType === "admin" || userType === "instructor" || userType == "placementCor") {
                         console.log(`Logged in as ${userType}`);
                         loggedInUser.innerHTML = '';
                         // Update UI to display username in the navbar
@@ -976,7 +1006,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const logoutButton = document.getElementById("logoutButton");
         const loginButton = document.getElementById("loginButton");
 
-       
+
 
         // Display user profile based on role
         switch (userType) {
@@ -992,7 +1022,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.querySelector('#aboutUs').style.display = "block";
                 document.getElementById('registrationButton').style.display = 'none';
                 document.getElementById('StudRegButton').style.display = 'none';
-                
+                document.querySelector('#ScholarshipReq').style.display = 'none';
+                document.getElementById('gradeReport').style.display = 'none';
+
 
                 break;
             case 'instructor':
@@ -1012,7 +1044,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.getElementById('academicDetailsDropdown').style.display = 'none';
                 document.getElementById('registrationButton').style.display = 'none';
                 document.getElementById('StudRegButton').style.display = 'block';
-                
+                document.querySelector('#ScholarshipReq').style.display = 'none';
+                document.getElementById('gradeReport').style.display = 'block';
+
 
                 break;
             case 'admin':
@@ -1020,6 +1054,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Show admin-related UI elements
                 document.querySelector('#homeLink').style.display = "none";
                 document.getElementById('addStudeBtn').style.display = "block";
+                document.querySelector('#addStudentsBtn').style.display = "block";
                 document.getElementById('addCourseBtn').style.display = "block";
                 document.getElementById('addinstructorBtn').style.display = "block";
                 document.querySelector('#InstList').style.display = "block";
@@ -1029,7 +1064,30 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.getElementById('academicDetailsDropdown').style.display = 'none';
                 document.getElementById('registrationButton').style.display = 'block';
                 document.getElementById('StudRegButton').style.display = 'none';
+                document.querySelector('#ScholarshipReq').style.display = 'block';
+                document.getElementById('gradeReport').style.display = 'none';
 
+                break;
+            case 'placementCor':
+                console.log("Logged in as Placement Cordinator");
+                // Show admin-related UI elements
+                document.querySelector('#std').style.display = "block";
+                document.querySelector('#homeLink').style.display = "none";
+                document.querySelector('#queryLink').style.display = "none";
+                document.querySelector('#courses').style.display = "none";
+                document.getElementById('addStudeBtn').style.display = "none";
+                document.getElementById('addStudentsBtn').style.display = 'none';
+                document.getElementById('addCourseBtn').style.display = "none";
+                document.getElementById('addinstructorBtn').style.display = "none";
+                document.querySelector('#InstList').style.display = "none";
+                document.querySelector('#instructor-Courses').style.display = "none";
+                document.querySelector('#aboutUs').style.display = "block";
+                document.getElementById('personalDetailsDropdown').style.display = 'none';
+                document.getElementById('academicDetailsDropdown').style.display = 'none';
+                document.getElementById('registrationButton').style.display = 'none';
+                document.getElementById('StudRegButton').style.display = 'none';
+                document.querySelector('#ScholarshipReq').style.display = 'none';
+                document.getElementById('gradeReport').style.display = 'none';
 
                 break;
             default:
@@ -1042,7 +1100,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
-document.getElementById('IDCardBtn').addEventListener('click', function() {
+document.getElementById('IDCardBtn').addEventListener('click', function () {
     // Retrieve username from session storage
     const username = sessionStorage.getItem('username');
     console.log(username);
@@ -1056,8 +1114,9 @@ document.getElementById('IDCardBtn').addEventListener('click', function() {
     window.location.href = `./Components/IdCard.html?username=${username}`;
 });
 
-document.getElementById('ScholarshipBtn').addEventListener('click', function() {
-    window.location.href = "./Components/scholarship.html";
+document.getElementById('ScholarshipBtn').addEventListener('click', function () {
+    const username = sessionStorage.getItem('username');
+    window.location.href = `./Components/Scholarship.html?username=${username}`;
 });
 
 
@@ -1070,7 +1129,7 @@ document.getElementById("Profile").addEventListener("click", function () {
     // window.location.href = 'profile.html';
 });
 
-document.getElementById('showcoursesBtn').addEventListener('click', function() {
+document.getElementById('showcoursesBtn').addEventListener('click', function () {
     const username = sessionStorage.getItem('username');
     if (username) {
         window.location.href = `./Components/showcourses.html?studentId=${username}`;
@@ -1079,7 +1138,7 @@ document.getElementById('showcoursesBtn').addEventListener('click', function() {
     }
 });
 
-document.getElementById('addStudentsBtn').addEventListener('click', function() {
+document.getElementById('addStudentsBtn').addEventListener('click', function () {
     window.location.href = "./Components/addstudents.html";
 });
 
@@ -1262,3 +1321,56 @@ function displayCourses(courses) {
 
 
 
+document.addEventListener('DOMContentLoaded', () => {
+    const notificationIcon = document.getElementById('notificationIcon');
+    const notificationIndicator = document.getElementById('notificationIndicator');
+
+    // Fetch and display the registration status
+    function checkRegistrationStatus() {
+        fetch('http://localhost:5000/check-registration-status')
+            .then(response => response.json())
+            .then(data => {
+                if (data.isOpen) {
+                    showNotificationIndicator();
+                    displayNotification("Registration is now open!");
+                }
+            })
+            .catch(error => console.error('Error checking registration status:', error));
+    }
+
+    // Display the notification indicator
+    function showNotificationIndicator() {
+        notificationIndicator.style.display = 'block';
+    }
+
+    // Hide the notification indicator
+    function hideNotificationIndicator() {
+        notificationIndicator.style.display = 'none';
+    }
+
+    // Function to display a notification message
+    function displayNotification(message) {
+        const notificationWindow = document.getElementById('notificationWindow');
+        const notificationList = document.getElementById('notificationList');
+        const newNotification = document.createElement('li');
+        newNotification.textContent = message;
+        notificationList.appendChild(newNotification);
+        notificationWindow.style.display = 'block';
+
+        // Optionally, add timeout logic to auto-hide or clear old notifications
+    }
+
+    // Set up click event to toggle the notification window
+    notificationIcon.addEventListener('click', () => {
+        const notificationWindow = document.getElementById('notificationWindow');
+        if (notificationWindow.style.display === 'none') {
+            notificationWindow.style.display = 'block';
+            hideNotificationIndicator();
+        } else {
+            notificationWindow.style.display = 'none';
+        }
+    });
+
+    // Check registration status when the page loads
+    checkRegistrationStatus();
+});

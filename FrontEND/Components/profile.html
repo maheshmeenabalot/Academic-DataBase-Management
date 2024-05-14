@@ -4,113 +4,123 @@
 <head>
     <meta charset="UTF-8">
     <title>Profile</title>
-    <style>body {
-        font-family: 'Segoe UI', sans-serif;
-        background-color: #e8eff1; /* Lighter background for a fresh look */
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-        min-height: 100vh;
-        margin: 0;
-        padding: 20px;
-    }
-    
-    #backToHomeBtn {
-        position: absolute;
-        top: 20px;
-        left: 20px;
-        background-color: #4a69bd;
-        color: white;
-        padding: 10px 20px;
-        font-size: 14px;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: background-color 0.3s;
-    }
-    
-    #ProfileCont {
-        width: 100%;
-        max-width: 800px;
-        background: white;
-        padding: 25px;
-        border-radius: 10px;
-        box-shadow: 0 6px 10px rgba(0,0,0,0.1);
-    }
-    
-    h1 {
-        color: #333;
-        text-align: center;
-        margin-bottom: 30px;
-    }
-    
-    .form-row {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 15px;
-    }
-    
-    .form-row label {
-        flex-basis: 30%;
-        text-align: right;
-        padding-right: 10px;
-        align-self: center;
-    }
-    
-    input[type="text"], input[type="email"] {
-        flex-basis: 65%;
-        padding: 8px;
-        border: 2px solid #bfc9ca;
-        border-radius: 4px;
-        font-size: 14px;
-    }
-    
-    #profilePhoto {
-        display: block;
-        margin: 0 auto 20px;
-        width: 120px;
-        height: 120px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 3px solid #4a69bd;
-    }
-    
-    button {
-        width: 48%;
-        padding: 12px;
-        color: white;
-        background-color: #60a3bc;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        margin-top: 10px;
-    }
-    
-    button:hover {
-        background-color: #3c6382;
-    }
-    
-    /* Responsive adjustments for smaller screens */
-    @media (max-width: 600px) {
-        .form-row {
+
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #e8eff1;
+            /* Lighter background for a fresh look */
+            display: flex;
+            justify-content: center;
+            align-items: center;
             flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
         }
-        .form-row label {
-            text-align: left;
-            padding-right: 0;
+
+        #backToHomeBtn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: #4a69bd;
+            color: white;
+            padding: 10px 20px;
+            font-size: 14px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
         }
-        input[type="text"], input[type="email"] {
-            flex-basis: 100%;
-        }
-        button {
+
+        #ProfileCont {
             width: 100%;
+            max-width: 800px;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
         }
-    }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .form-row label {
+            flex-basis: 30%;
+            text-align: right;
+            padding-right: 10px;
+            align-self: center;
+        }
+
+        input[type="text"],
+        input[type="email"] {
+            flex-basis: 65%;
+            padding: 8px;
+            border: 2px solid #bfc9ca;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        #profilePhoto {
+            display: block;
+            margin: 0 auto 20px;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #4a69bd;
+        }
+
+        button {
+            width: 48%;
+            padding: 12px;
+            color: white;
+            background-color: #60a3bc;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #3c6382;
+        }
+
+        /* Responsive adjustments for smaller screens */
+        @media (max-width: 600px) {
+            .form-row {
+                flex-direction: column;
+            }
+
+            .form-row label {
+                text-align: left;
+                padding-right: 0;
+            }
+
+            input[type="text"],
+            input[type="email"] {
+                flex-basis: 100%;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
     </style>
+    <!-- <link rel="stylesheet" href="style.css"> -->
 </head>
 
 <body>
     <button id="backToHomeBtn" style="position: absolute; top: 10px; left: 10px;">Back to Home</button>
+    <br><br><br>
     <div id="ProfileCont" style="display: block;">
         <h1>User Profile</h1>
         <div id="profileForm">
@@ -180,15 +190,19 @@
                 <label for="profileBloodGroupInput">Blood Group:</label>
                 <input type="text" id="profileBloodGroupInput">
             </div>
+            <div class="form-row">
+                <label for="profileFAInput">Faculty Advisor:</label>
+                <input type="text" id="profileFAInput">
+            </div>
             <button id="updateProfileBtn" style="display: block;">Update Profile</button>
             <button id="submitProfileBtn" style="display: none;">Submit</button>
         </div>
     </div>
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            document.getElementById('backToHomeBtn').addEventListener('click', function() {
-          history.back(); // Go back to the previous page
-      });
+            document.getElementById('backToHomeBtn').addEventListener('click', function () {
+                history.back(); // Go back to the previous page
+            });
             const urlParams = new URLSearchParams(window.location.search);
             const username = urlParams.get('username');
 
@@ -199,7 +213,7 @@
             // Fetch the profile data from the server and display it in the HTML elements
             function fetchProfileData(username) {
                 // Send a GET request to the server to fetch the profile data
-                fetch(`http://localhost:5000/profile?username=${username}`)
+                fetch(`http://localhost:5000/get-profile?username=${username}`)
                     .then(response => {
                         if (!response.ok) {
                             throw new Error('Network response was not ok');
@@ -232,6 +246,7 @@
                 document.getElementById("profileFatherNameInput").value = data.Father_Name || '';
                 document.getElementById("profileFatherMobileInput").value = data.Father_Mobile || '';
                 document.getElementById("profileBloodGroupInput").value = data.Blood_Group || '';
+                document.getElementById("profileFAInput").value = data.Faculty_Advisor || '';
 
                 // const profilePhotoImg = document.querySelector("#profilePhotoContainer img");
                 // if (data.Photo) {
@@ -310,7 +325,7 @@
                         // Handle errors, e.g., display an error message to the user
                     });
             }
-            
+
         });
     </script>
 </body>

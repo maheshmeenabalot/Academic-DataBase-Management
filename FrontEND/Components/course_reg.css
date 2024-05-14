@@ -1,6 +1,6 @@
 
    /* Reset some styles for a consistent baseline */
-body, input, select, table, td, th {
+   body, input, select, table, td, th {
     font-family: Arial, sans-serif;
     font-size: 14px;
     line-height: 1.4;

@@ -43,41 +43,47 @@
             text-align: left;
             border: 1px solid #ccc;
         }
+
         /* Basic styling for the button */
-#backToHomeBtn {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    padding: 10px 20px;
-    font-size: 16px;
-    font-family: 'Arial', sans-serif;
-    color: #fff;
-    background-color: #007BFF;  /* Bootstrap primary blue */
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-}
+        #backToHomeBtn {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-family: 'Arial', sans-serif;
+            color: #fff;
+            background-color: #007BFF;
+            /* Bootstrap primary blue */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
 
-/* Hover effect for the button */
-#backToHomeBtn:hover {
-    background-color: #0056b3; /* A darker shade of blue */
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-}
+        /* Hover effect for the button */
+        #backToHomeBtn:hover {
+            background-color: #0056b3;
+            /* A darker shade of blue */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
 
-/* Focus styles to maintain accessibility */
-#backToHomeBtn:focus {
-    outline: none;  /* Removes default outline styles */
-    box-shadow: 0 0 0 4px rgba(0,123,255,0.5); /* Glowing effect for focus */
-}
+        /* Focus styles to maintain accessibility */
+        #backToHomeBtn:focus {
+            outline: none;
+            /* Removes default outline styles */
+            box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.5);
+            /* Glowing effect for focus */
+        }
 
-/* Active state styles when the button is clicked */
-#backToHomeBtn:active {
-    background-color: #004085; /* Even darker shade when active */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2); /* Resetting shadow to normal */
-}
-
+        /* Active state styles when the button is clicked */
+        #backToHomeBtn:active {
+            background-color: #004085;
+            /* Even darker shade when active */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            /* Resetting shadow to normal */
+        }
     </style>
 </head>
 
@@ -108,6 +114,7 @@
                     <th>Course Type</th>
                     <th>Instructor Name</th>
                     <th>Email</th>
+                    <th>Prerequisites</th>
                     <th>Select</th>
                 </tr>
             </thead>
@@ -195,13 +202,14 @@
                         console.log("Fetched courses:", data.courses);
                         coursesBody.innerHTML = "";
                         data.courses.forEach(course => {
-                            const { Course_Code, Course_Type, Instructor_Name, Email } = course;
+                            const { Course_Code, Course_Type, Instructor_Name, Email, Prerequisites } = course;
                             const row = `
                             <tr>
                                 <td>${Course_Code}</td>
                                 <td>${Course_Type}</td>
                                 <td>${Instructor_Name}</td>
                                 <td>${Email}</td>
+                                <td>${Prerequisites}</td>
                                 <td><input type="checkbox" name="selectedCourses" value="${Course_Code}"></td>
                             </tr>`;
                             coursesBody.innerHTML += row;
@@ -215,36 +223,6 @@
             }
 
 
-
-            // function registerCourses(studentId, department, semesterNumber, selectedCourses) {
-            //     fetch('http://localhost:5000/submit-course-reg', {
-            //         method: 'POST',
-            //         headers: {
-            //             'Content-Type': 'application/json'
-            //         },
-            //         body: JSON.stringify({
-            //             studentId: studentId,
-            //             courses: selectedCourses
-            //         })
-            //     })
-            //         .then(response => response.json().then(data => ({
-            //             status: response.status,
-            //             data
-            //         })))
-            //         .then(obj => {
-            //             if (obj.status === 400) {
-            //                 console.error('Some courses are already registered:', obj.data);
-            //                 alert('Some courses are already registered: ' + obj.data.courses.join(', '));
-            //             } else {
-            //                 console.log('Courses registered successfully:', obj.data);
-            //                 alert('Courses registered successfully.');
-            //             }
-            //         })
-            //         .catch(error => {
-            //             console.error('Error registering courses:', error);
-            //             alert('Failed to register courses. Please try again.');
-            //         });
-            // }
             function registerCourses(studentId, department, semesterNumber, selectedCourses) {
                 fetch('http://localhost:5000/submit-course-reg', {
                     method: 'POST',
@@ -257,12 +235,24 @@
                         courses: selectedCourses
                     })
                 })
+            
                     .then(response => {
                         // Parse JSON from response, ensuring to check response status
                         if (!response.ok) {
                             // If the response is not OK, we parse and throw an error to catch it later
                             return response.json().then(data => {
-                                throw new Error(`${data.message}: ${data.courses ? data.courses.join(', ') : ''}`);
+                                // Constructing a detailed error message based on specific error types
+                                let errorMessage = '';
+                                if (data.message.includes('instructor id  not found')) {
+                                    errorMessage = 'Error: Instructor ID not found: ';
+                                } else if (data.message.includes('Prerequisite')) {
+                                    errorMessage =data.message;// 'Error: Prerequisite not met for the following course(s): ';
+                                } else if (data.message.includes('already registered')) {
+                                    errorMessage = data.message//'Error: Already registered or enrolled in the following course(s): ';
+                                } else {
+                                    errorMessage = 'Error: ';
+                                }
+                                throw new Error(`${errorMessage}${data.courses ? data.courses.join(', ') : ''}`);
                             });
                         }
                         // If the response is OK, we also parse it to JSON and return
@@ -278,6 +268,7 @@
                         console.error('Error registering courses:', error);
                         alert('Failed to register courses: ' + error.message);
                     });
+
             }
 
 

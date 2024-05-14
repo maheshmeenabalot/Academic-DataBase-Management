@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grade Report Generator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+
+    <style>
+        /* General body and layout styling */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            /* Modern font for better readability */
+            background-color: #ffffff;
+            /* Clean white background */
+            color: #333;
+            /* Soft black for text for less strain on eyes */
+            padding: 30px;
+            /* More padding for better layout */
+            line-height: 1.6;
+            /* Improved line spacing */
+            max-width: 800px;
+            /* Limiting max width for better reading experience */
+            margin: auto;
+            /* Centers the layout in the middle of the page */
+        }
+
+        /* Styling for the main header */
+        h1 {
+            color: #4A47A3;
+            /* Deep purple for a bit of vibrance */
+            text-align: center;
+            /* Center-align text */
+            margin-bottom: 20px;
+            /* Space below the header */
+        }
+
+        /* Enhancements for the file input interaction */
+        #file-input {
+            display: block;
+            width: 80%;
+            /* Relative width */
+            margin: 20px auto;
+            padding: 12px 20px;
+            border: 1px solid #ddd;
+            /* Subtle border */
+            border-radius: 8px;
+            /* More pronounced rounded corners */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            /* Soft shadow for depth */
+            transition: border-color 0.3s;
+            /* Smooth transition for interactive elements */
+        }
+
+        #file-input:hover,
+        #file-input:focus {
+            border-color: #4A47A3;
+            /* Change border color on hover/focus */
+        }
+
+        /* More dynamic button styling */
+        #generate-btn {
+            display: block;
+            width: 50%;
+            /* Button takes half of the form width */
+            padding: 12px;
+            background-color: #4A47A3;
+            /* Matching header color */
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            margin: 20px auto;
+            /* More vertical margin for spacing */
+            cursor: pointer;
+            font-size: 18px;
+            /* Slightly larger text */
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            /* More noticeable shadow for 3D effect */
+            transition: background-color 0.3s, box-shadow 0.3s;
+            /* Transition for smooth color and shadow changes */
+        }
+
+        #generate-btn:hover {
+            background-color: #352f5b;
+            /* Darker shade on hover for feedback */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            /* Larger shadow on hover for floating effect */
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Grade Report Generator</h1>
+    <input type="file" id="file-input" accept=".xlsx, .xls" />
+    <button id="generate-btn">Generate Report</button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const generateButton = document.getElementById('generate-btn');
+            generateButton.addEventListener('click', generateReport);
+        });
+
+        const { jsPDF } = window.jspdf;
+
+        function generateReport() {
+            const fileInput = document.getElementById('file-input');
+            if (fileInput.files.length === 0) {
+                alert('Please select a file before generating a report.');
+                return;
+            }
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                const firstSheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[firstSheetName];
+                const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1 }).slice(1);
+
+                const gradeCounts = rows.reduce((acc, [id, grade]) => {
+                    acc[grade] = (acc[grade] || 0) + 1;
+                    return acc;
+                }, {});
+
+                generatePDF(gradeCounts);
+            };
+
+            reader.readAsArrayBuffer(fileInput.files[0]);
+        }
+
+        function generatePDF(gradeCounts) {
+            const doc = new jsPDF();
+            doc.text("Grade Report", 20, 20);
+            doc.setFontSize(12);
+
+            const grades = ["A+", "A", "B+", "B", "C+", "C", "D", "F"];
+            doc.text("Grade", 20, 40);
+            doc.text("No. of Students", 70, 40);
+            let yPos = 50;
+
+            grades.forEach(grade => {
+                const count = gradeCounts[grade] || 0; // Default to 0 if no students have that grade
+                doc.text(`${grade}`, 20, yPos);
+                doc.text(`${count}`, 70, yPos);
+                yPos += 10;
+            });
+
+            doc.save('grade-report.pdf');
+        }
+    </script>
+</body>
+
+</html>

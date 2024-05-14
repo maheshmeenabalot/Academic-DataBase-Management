@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -73,7 +73,7 @@
       </tr>
     </thead>
     <tbody id="coursesList">
-      <!-- Courses will be dynamically added here -->
+
     </tbody>
   </table>
 
@@ -90,7 +90,7 @@
       console.log(studentId);
 
 
-      fetch(`http://localhost:5000/get-registered-courses?semester=${semester}&studentId=${studentId}`)
+      fetch(`http://localhost:5000/get-registered-courses-by-sem?semester=${semester}&studentId=${studentId}`)
         .then(response => response.json())
         .then(data => {
           const coursesList = document.getElementById('coursesList');
@@ -114,4 +114,118 @@
   </script>
 </body>
 
+</html> -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>View Registered Courses</title>
+  <style>
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    #backToHomeBtn {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      color: #fff;
+      background-color: #4f91ca;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    #backToHomeBtn:hover {
+      background-color: #0056b3;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    }
+    #backToHomeBtn:focus {
+      outline: none;
+      box-shadow: 0 0 0 4px rgba(0,123,255,0.5);
+    }
+    #backToHomeBtn:active {
+      background-color: #004085;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+  </style>
+</head>
+<body>
+  <button id="backToHomeBtn" style="position: absolute; top: 10px; left: 10px;">Back to Home</button>
+  <h1>Registered Courses for Semester <span id="semesterNumber"></span></h1>
+  <div id="spiDisplay">SPI: <span id="spiValue">N/A</span></div>
+  <table>
+    <thead>
+      <tr>
+        <th>Course Code</th>
+        <th>Instructor Name</th>
+        <th>Course Type</th>
+        <th>Credits</th>
+        <th>Grade</th>
+      </tr>
+    </thead>
+    <tbody id="coursesList">
+      <!-- Courses will be dynamically added here -->
+    </tbody>
+  </table>
+
+  <script>
+    document.getElementById('backToHomeBtn').addEventListener('click', function () {
+      history.back(); // Go back to the previous page
+    });
+    document.addEventListener("DOMContentLoaded", () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const semester = urlParams.get('semester');
+      const studentId = sessionStorage.getItem('username'); // Assume 'username' is stored in sessionStorage
+
+      document.getElementById('semesterNumber').textContent = semester;
+
+      fetch(`http://localhost:5000/get-registered-courses-by-sem?semester=${semester}&studentId=${studentId}`)
+        .then(response => response.json())
+        .then(data => {
+          const coursesList = document.getElementById('coursesList');
+          coursesList.innerHTML = ''; // Clear existing rows
+          let totalPoints = 0, totalCredits = 0;
+          data.forEach(course => {
+            const row = `<tr>
+                <td>${course.Course_Code}</td>
+                <td>${course.Instructor_Name}</td>
+                <td>${course.Course_Type}</td>
+                <td>${course.Credit}</td>
+                <td>${course.Grade}</td>
+            </tr>`;
+            coursesList.innerHTML += row;
+            // Calculate SPI
+            totalCredits += parseFloat(course.Credit);
+            totalPoints += parseFloat(course.Credit) * convertGradeToPoints(course.Grade);
+          });
+          const spi = totalCredits > 0 ? (totalPoints / totalCredits).toFixed(2) : 'N/A';
+          document.getElementById('spiValue').textContent = spi;
+        })
+        .catch(error => {
+          console.error('Failed to fetch courses:', error);
+          alert("Error fetching courses.");
+        });
+
+      function convertGradeToPoints(grade) {
+        const gradeMap = {
+          'A+': 10, 'A': 9, 'B+': 8, 'B': 7,
+          'C+': 6, 'C': 5, 'D': 4, 'E': 0, 'F': 0
+        };
+        return gradeMap[grade] || 0; // Defaults to 0 if grade is unrecognized
+      }
+    });
+  </script>
+</body>
 </html>

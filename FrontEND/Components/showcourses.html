@@ -154,6 +154,7 @@
                 .then(data => {
                     console.log(data);
                     displayCourses(data);
+                    displayCPI(data); 
                 })
                 .catch(error => {
                     console.error('Error:', error);
@@ -266,7 +267,25 @@
             });
             return totalCredits > 0 ? (totalPoints / totalCredits).toFixed(2) : 'N/A';  // Rounded to two decimal places
         }
+        // Calculate and display CPI
+        function displayCPI(courses) {
+            const cpi = calculateCPI(courses);
+            const cpiLabel = document.createElement('h2');
+            cpiLabel.textContent = `CPI: ${cpi}`;
+            document.getElementById("courseList").prepend(cpiLabel);
+        }
 
+        function calculateCPI(courses) {
+            let totalPoints = 0;
+            let totalCredits = 0;
+            courses.forEach(course => {
+                const credits = parseFloat(course.Credit);
+                const gradePoints = convertGradeToPoints(course.Grade);
+                totalCredits += credits;
+                totalPoints += credits * gradePoints;
+            });
+            return totalCredits > 0 ? (totalPoints / totalCredits).toFixed(2) : 'N/A';  // Rounded to two decimal places
+        }
 
 
         // Retrieve student ID from URL parameters

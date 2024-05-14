@@ -30,16 +30,32 @@
         <h1>Academic Database Management System</h1>
     </header>
 
+    <div id="notificationIcon">
+        <img src="./Components/Images/images.png" alt="Notifications">
+        <div id="notificationIndicator" style="display: none; position: absolute; top: 0; right: 0; width: 15px; height: 15px; background-color: red; border-radius: 50%;"></div>
+    </div>
+    
+    <div id="notificationWindow" style="display: none; position: fixed; bottom: 80px; right: 20px; width: 300px; background-color: white; border: 1px solid #ccc; border-radius: 5px; padding: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+        <h4>Notifications</h4>
+        <ul id="notificationList">
+            <!-- Notifications will be added here dynamically -->
+        </ul>
+    </div>
+    
+    
+
+    
     <nav class="bottom-navbar">
         <a href="#" id="homeLink">Home</a>
         <a href="#" id="std" class="protected-content">Students</a>
         <a href="#" id="InstList" class="protected-content" >instructors</a>
         <a href="#" id="courses" class="protected-content">Courses</a>
-        <a href="#" id="queryLink" class="protected-content">Query</a>
         <a href="#" id="instructor-Courses" class="protected-content">View Courses</a>
         <a href="#" id="registrationButton" class="protected-content" style="display:none;">Manage Registration</a>
         <a href="#" id="StudRegButton" class="protected-content" style="display:none;">Student Requests</a>
-
+        <a href="#" id="ScholarshipReq" class="protected-content" style="display:none;">Scholarship Requests</a>
+        <a href="#" id="gradeReport" class="protected-content" style="display:none;">Generate Grade Report</a>
+        <a href="#" id="queryLink" class="protected-content">Query</a>
         <a href="#" id="aboutUs" class="protected-content">About Us</a>
 
     </nav>
@@ -83,6 +99,7 @@
                     <option value="student">Student</option>
                     <option value="admin">Admin</option>
                     <option value="instructor">instructor</option>
+                    <option value="placementCor">Placement Cor.</option>
                 </select>
             </div>
             <button type="submit">Login</button>
@@ -97,7 +114,7 @@
             <!-- Your content goes here -->
             <button type="button" id="filterBtn">Filter</button>
             <button class="addstudent" id="addStudeBtn">Add Student</button>
-            <button class="addstudents" id="addStudentsBtn">Add students</button>
+            <button class="addstudents" id="addStudentsBtn" style="display: none;">Add students</button>
             <button class="addcourse" id="addCourseBtn">Add Course</button>
             <button class="addinstructor" id="addinstructorBtn" style="display: none; ">Add instructor</button>
         </div>
@@ -132,14 +149,9 @@
             </div>
             <div class="as-block">
                 <h3>Batch</h3>
-                <select name="batch" id="batch">
-                    <option value="">Select Batch</option>
-                    <option value="2020">2020</option>
-                    <option value="2021">2021</option>
-                    <option value="2022">2022</option>
-                    <option value="2023">2023</option>
-                </select>
+                <input type="text" name="batch" id="batch" placeholder="Enter Batch Year">
             </div>
+            
             <div class="as-block">
                 <h3>Gender</h3>
                 <select name="gender" id="gender">
@@ -158,7 +170,12 @@
                 <h3>CGPA</h3>
                 <input type="number" id="cgpa" name="cgpa" step="0.01" min="0" max="10" required><br><br>
             </div>
+            <div class="as-block">
+                <h3>Instructor_ID</h3>
+                <input type="number" id="Instructor_ID" name="Instructor_ID" required><br><br>
+            </div>
             <button type="submit">Submit</button>
+            
 
         </form>
     </div>

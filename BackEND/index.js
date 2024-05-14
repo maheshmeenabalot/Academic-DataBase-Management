@@ -5,11 +5,14 @@ const path = require("path"); // Import path module
 const bodyParser = require("body-parser");
 app.use(cors());
 const router = express.Router();
+const fs = require('fs');
+const moment = require('moment-timezone');
 
 // Define your routes here
 router.get('/', (req, res) => {
     res.send('Hello from index.js');
 });
+
 
 app.use(express.static(path.join(__dirname, 'FrontEND')));
 
@@ -22,6 +25,7 @@ const xlsx = require('xlsx');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static('public'));  // Serve static files from public directory
+
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -46,13 +50,14 @@ const storage = multer.diskStorage({
         cb(null, dest);
     },
     filename: function (req, file, cb) {
-        // Generate a unique filename for each file
         const filename = `${Date.now()}-${file.originalname}`;
         cb(null, filename);
     }
 });
-
 const upload = multer({ storage: storage });
+app.get('/ScholarshipApplications', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'FrontEND', './Components/ScholarshipApplications.html'));
+});
 
 // Endpoint to handle the scholarship form submission
 app.post('/submit-scholarship', upload.fields([
@@ -71,10 +76,9 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads', 'ScholarshipU
     }
 }));
 
-
 // New route to fetch all scholarship applications
 app.get('/applications', (req, res) => {
-    const applicationsPath = path.join(__dirname,'uploads', 'ScholarshipUploads');
+    const applicationsPath = path.join(__dirname, 'uploads', 'ScholarshipUploads');
     fs.readdir(applicationsPath, (err, folders) => {
         if (err) {
             console.error(err);
@@ -92,17 +96,38 @@ app.get('/applications', (req, res) => {
 // Serve files from the 'uploads' directory, removing the case sensitivity issue
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+app.use(express.static('public'));
 
+app.post('/upload', upload.single('file'), (req, res) => {
+    if (req.file) {
+        readFile(req.file.buffer).then(rows => {
+            const data = processData(rows);
+            res.json(data);
+        }).catch(error => {
+            res.status(500).send("Failed to read the Excel file.");
+        });
+    } else {
+        res.status(400).send("No file uploaded.");
+    }
+});
 
+function processData(rows) {
+    // Extract and process data from rows
+    return {
+        // processed data
+    };
+}
 
 
 const corsOptions = {
-    origin: 'http://127.0.0.1:5501', // Allow requests from this origin
+    origin: 'http://127.0.0.1:5500', // Allow requests from this origin
     methods: 'POST', // Allow only POST requests
     optionsSuccessStatus: 200 // Respond with 200 for preflight requests
 };
 
 app.use(cors(corsOptions));
+
+
 
 
 app.post('/submit-grades', upload.single('gradesFile'), (req, res) => {
@@ -204,14 +229,6 @@ app.post('/add-students', upload.single('studentsFile'), async (req, res) => {
         return res.status(500).send('Failed to process file.');
     }
 });
-
-
-//code for scholarship 
-app.use(express.static('public'));
-
-const fs = require('fs');
-
-
 // Export the router
 module.exports = router;
 
@@ -224,6 +241,7 @@ app.use(express.json());
 
 
 
+
 app.get('/contact', function (req, res) {
     res.render('contact', { qs: req.query });
 });
@@ -231,6 +249,7 @@ app.get('/contact', function (req, res) {
 app.get("/", (req, res) => {
     res.send("working");
 });
+
 
 app.get("/student", (req, res) => {
     pool.query('SELECT * FROM student', (err, results, fields) => {
@@ -299,19 +318,33 @@ app.get("/search", (req, res) => {
 });
 
 app.post("/submit-form", (req, res) => {
-    const { studentID, studentName, branch, batch, gender, email, cgpa, instructor_Advisor } = req.body;
+    const { studentID, studentName, branch, batch, gender, email, cgpa, Instructor_ID } = req.body;
 
-    pool.query('INSERT INTO student (Student_ID, Student_Name, Branch, Batch, Gender, Email, CGPA,instructor_Advisor) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-        [studentID, studentName, branch, batch, gender, email, cgpa, instructor_Advisor],
-        (err, results) => {
-            if (err) {
-                console.error('Error adding student:', err);
-                return res.status(500).send("Internal Server Error");
-            }
-            console.log('Student added successfully');
-            res.json({ message: 'Student added successfully' });
-        });
+    // First, fetch the instructor name using the Instructor_ID
+    pool.query('SELECT Instructor_Name FROM Instructor WHERE Instructor_ID = ?', [Instructor_ID], (err, result) => {
+        if (err) {
+            console.error('Error fetching instructor:', err);
+            return res.status(500).send("Internal Server Error");
+        }
+        if (result.length === 0) {
+            return res.status(404).send("Faculty Advisor not found. Please check the ID and try again.");
+        }
+        const Faculty_Advisor = result[0].Instructor_Name;
+
+        // Then, proceed to insert the new student with the fetched Faculty_Advisor
+        pool.query('INSERT INTO student (Student_ID, Student_Name, Branch, Batch, Gender, Email, CGPA, Faculty_Advisor, Instructor_ID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            [studentID, studentName, branch, batch, gender, email, cgpa, Faculty_Advisor, Instructor_ID],
+            (err, results) => {
+                if (err) {
+                    console.error('Error adding student:', err);
+                    return res.status(500).send("Internal Server Error");
+                }
+                console.log('Student added successfully');
+                res.json({ message: 'Student added successfully' });
+            });
+    });
 });
+
 
 app.post("/submit-course", (req, res) => {
     const { courseCode, school, instructorName, email } = req.body;
@@ -432,8 +465,9 @@ app.get('/student/:username', (req, res) => {
 
 
 
-app.get('/profile', (req, res) => {
-    const sql = "SELECT * FROM student_profile WHERE Student_ID = ?";
+app.get('/get-profile', (req, res) => {
+    const sql = "SELECT sp.*, sa.Faculty_Advisor AS Faculty_Advisor FROM student_profile sp JOIN student sa ON sp.Student_ID = sa.Student_ID WHERE sp.Student_ID = ?;";
+
     const username = req.query.username; // Change parameter name to 'username'
 
     pool.query(sql, [username], (err, result) => {
@@ -444,9 +478,11 @@ app.get('/profile', (req, res) => {
         if (result.length === 0) {
             return res.status(404).json({ error: 'Student not found' });
         }
+        console.log(result[0]);
         res.json(result[0]);
     });
 });
+
 
 
 app.post('/updateProfile', (req, res) => {
@@ -489,6 +525,7 @@ app.post('/get_courses_with_grades', (req, res) => {
             res.status(500).json({ error: 'Internal server error' });
             return;
         }
+        console.log(results);
         res.json(results);
     });
 });
@@ -497,29 +534,72 @@ app.post('/get_courses_with_grades', (req, res) => {
 
 app.get("/get-reg-courses", (req, res) => {
     const { Department, Semester } = req.query;
-    const query = `SELECT Course_Code, Instructor_Name, Email, Course_Type FROM courses WHERE Department LIKE '%${Department}%' AND Semester LIKE '%${Semester}%'`;
+    const query = `SELECT Course_Code, Instructor_Name, Email, Course_Type,Prerequisites FROM courses WHERE Department LIKE '%${Department}%' AND Semester LIKE '%${Semester}%'`;
     pool.query(query, (err, results) => {
         if (err) {
             console.error("Error fetching courses:", err);
             res.status(500).json({ error: "Internal server error" });
             return;
         }
+        console.log(results);
         res.json({ courses: results });
     });
 });
 
 
+app.get('/course_reg', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'FrontEND', './Components/course_reg.html'));
+});
+
+app.get('/profile', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'FrontEND', './Components/profile.html'));
+});
+
+app.get('/add-instructor', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'FrontEND', './Components/add-instructor.html'));
+});
+app.get('/adminRegistration', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'FrontEND', './Components/adminRegistration.html'));
+});
+app.get('/CourseBySem', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'FrontEND', './Components/CourseBySem.html'));
+});
+
+app.get('/StudRegRequests', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'FrontEND', './Components/StudRegRequests.html'));
+});
+app.get('/Scholarship', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'FrontEND', './Components/Scholarship.html'));
+});
+
+
 ///only for submit-course-reg
 const mysql1 = require('mysql2/promise');
+const { Console } = require("console");
 const pool1 = mysql1.createPool({
     connectionLimit: 10,
     host: 'localhost',
-    database: 'College',
+    database: 'College_db',
     user: 'root',
     password: '6350'
 });
 
-// 
+
+// run these on terminal:-  npm install nodemailer
+
+const nodemailer = require('nodemailer');
+
+let transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'sdms4coursereg@gmail.com',
+        pass: 'sgmgynevndglrwip'
+    }
+});
+
+
+
+
 
 app.post('/submit-course-reg', async (req, res) => {
     const { studentId, courses, semesterNumber } = req.body;
@@ -531,29 +611,93 @@ app.post('/submit-course-reg', async (req, res) => {
     try {
         const alreadyRegistered = [];
         for (const courseCode of courses) {
-            const [existingCourses] = await pool1.query(
+            // Check for previous registrations in the Registration table
+            const [existingInRegistration] = await pool1.query(
                 'SELECT Course_Code FROM Registration WHERE Student_ID = ? AND Course_Code = ?',
                 [studentId, courseCode]
             );
 
-            if (existingCourses.length > 0) {
+            if (existingInRegistration.length > 0) {
                 alreadyRegistered.push(courseCode);
-                continue;
+                continue;  // Skip further checks if already registered
             }
 
+            // Check for enrollment in the course_enrollment table
+            const [existingInEnrollment] = await pool1.query(
+                'SELECT Course_Code FROM course_enrollment WHERE Student_ID = ? AND Course_Code = ?',
+                [studentId, courseCode]
+            );
+
+            if (existingInEnrollment.length > 0) {
+                alreadyRegistered.push(courseCode);
+                continue;  // Skip further checks if already enrolled
+            }
+
+            // Check prerequisites
+            const prerequisites = await pool1.query(
+                'SELECT Prerequisites FROM courses WHERE Course_Code = ?',
+                [courseCode]
+            );
+
+            // Only check prerequisites if they exist
+            if (prerequisites[0].length > 0 && prerequisites[0][0].Prerequisites) {
+                for (const prereq of prerequisites[0]) {
+                    const grades = await pool1.query(
+                        `SELECT Grade FROM grades WHERE Student_ID = ? AND Course_Code = ? AND Grade NOT IN ('E', 'F')`,
+                        [studentId, prereq.Prerequisites]
+                    );
+
+                    if (grades[0].length === 0) {
+                        // Prerequisite not satisfied
+                        return res.status(402).json({
+                            error: `Prerequisite not satisfied for course ${courseCode}.`,
+                            message: `Prerequisite ${prereq.Prerequisites} not satisfied for course ${courseCode}.`
+                        });
+                    }
+                }
+            }
+
+            // Checking if the instructor is associated with the student
             const [[studentData]] = await pool1.query('SELECT Instructor_ID FROM student WHERE Student_ID = ?', [studentId]);
-            if (!studentData) {
+            if (!studentData || !studentData.Instructor_ID) {
                 return res.status(404).json({ error: `No instructor found for student with ID ${studentId}` });
             }
 
             const instructorId = studentData.Instructor_ID;
-            await pool1.query('INSERT INTO Registration (Student_ID, Course_Code, Instructor_ID,Semester) VALUES (?, ?, ?,?)',
-                [studentId, courseCode, instructorId, semesterNumber]);
+
+
+
+            // Insert the course into Registration table after passing all checks
+            await pool1.query(
+                'INSERT INTO Registration (Student_ID, Course_Code, Instructor_ID, Semester) VALUES (?, ?, ?, ?)',
+                [studentId, courseCode, instructorId, semesterNumber]
+            );
+            // Send email to the instructor
+            const instructorEmail = await pool1.query('SELECT Instructor_Email FROM Instructor WHERE Instructor_ID = ?', [instructorId]);
+            console.log(instructorEmail[0][0].Instructor_Email);
+            if (instructorEmail[0].length > 0) {
+                let mailOptions = {
+                    from: 'sdms4coursereg@gmail.com',
+                    // to: instructorEmail[0][0].Instructor_Email,
+                    to: 'rajesh.meena.20033@iitgoa.ac.in',
+                    subject: `New Course Registration by ${studentId}`,
+                    text: `A  student with ID ${studentId} has registered for course ${courseCode}. Please Review It.`
+                };
+
+                transporter.sendMail(mailOptions, function (error, info) {
+                    if (error) {
+                        console.log('Error sending email:', error);
+                    } else {
+                        console.log('Email sent: ' + info.response);
+                    }
+                });
+            }
         }
+
 
         if (alreadyRegistered.length > 0) {
             res.status(400).json({
-                message: "Some courses are already registered",
+                message: "Some courses are already registered : ",
                 courses: alreadyRegistered
             });
         } else {
@@ -596,28 +740,6 @@ app.post("/submit-instructor", (req, res) => {
 
 
 
-
-app.get('/course_reg', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'FrontEND', './Components/course_reg.html'));
-});
-
-app.get('/profile', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'FrontEND', './Components/profile.html'));
-});
-
-app.get('/add-instructor', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'FrontEND', './Components/add-instructor.html'));
-});
-app.get('/adminRegistration', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'FrontEND', './Components/adminRegistration.html'));
-});
-app.get('/CourseBySem', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'FrontEND', './Components/CourseBySem.html'));
-});
-
-app.get('/StudRegRequests', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'FrontEND', './Components/StudRegRequests.html'));
-});
 
 
 app.get('/student/:id', (req, res) => {
@@ -672,7 +794,7 @@ app.get('/get-student-profile', (req, res) => {
 });
 
 
-app.get('/get-registered-courses', (req, res) => {
+app.get('/get-registered-courses-by-sem', (req, res) => {
     const { semester, studentId } = req.query;
     if (!semester || !studentId) {
         return res.status(400).send('Semester and student ID are required');
@@ -684,12 +806,13 @@ app.get('/get-registered-courses', (req, res) => {
         JOIN grades g ON c.Course_Code = g.Course_Code
         WHERE c.Semester = ? AND g.Student_ID = ?
     `;
-
+    console.log(semester, studentId);
     pool.query(sql, [semester, studentId], (err, results) => {
         if (err) {
             console.error('Failed to fetch courses:', err);
             return res.status(500).send('Failed to fetch courses');
         }
+        console.log(results);
         res.json(results);
     });
 });
@@ -744,6 +867,23 @@ app.post('/set-registration-dates', (req, res) => {
         res.json({ message: "Registration dates successfully updated" });
     });
 });
+app.post('/end-registration-now', (req, res) => {
+    const { semester } = req.body;
+
+    const closeDate = moment.utc().tz('Asia/Kolkata').format('YYYY-MM-DD HH:mm:ss');
+    console.log(semester, closeDate);
+    const sql = `UPDATE registration_periods SET close_date = ? WHERE semester = ?`;
+    console.log(sql);
+    pool.query(sql, [closeDate, semester], (error, results) => {
+        if (error) {
+            console.error('Error ending registration:', error);
+            return res.status(500).json({ message: 'Error ending registration', error });
+        }
+        res.json({ message: 'Registration ended and date updated successfully', results });
+    });
+});
+
+
 
 
 
@@ -758,20 +898,39 @@ app.post('/update-registration-status', async (req, res) => {
             [status, studentId, courseCode]
         );
         console.log(updateResult[0].affectedRows);
-        // Check if the update operation was successful and the status is "Accepted"
+
+
+        // Check if the update operation was successful and the status is "Approved"
         if (status === 'Approved') {
 
+            // First, check if the course is already enrolled
+            const [existingEnrollment] = await pool1.query(
+                'SELECT * FROM course_enrollment WHERE Student_ID = ? AND Course_Code = ?',
+                [studentId, courseCode]
+            );
+
+            if (existingEnrollment.length > 0) {
+                // If already enrolled, send a message back without inserting
+                return res.status(409).json({ message: 'Course already enrolled' });
+            }
+
+            // If not enrolled, proceed to get the semester and enroll
             const [semesterResult] = await pool1.query(
                 'SELECT Semester FROM Registration WHERE Student_ID = ? AND Course_Code = ?',
                 [studentId, courseCode]
             );
 
+            if (semesterResult.length === 0) {
+                // Handle unexpected case where semester data is missing
+                return res.status(404).json({ error: 'Semester information not found for registration' });
+            }
+
             const semester = semesterResult[0].Semester;
 
-            // If the registration status update was successful and is "Accepted", insert into course_enrollment
+            // Proceed to insert into course_enrollment
             const insertResult = await pool1.query(
                 'INSERT INTO course_enrollment (Student_ID, Course_Code, Semester) VALUES (?, ?, ?)',
-                    [studentId, courseCode, semester]
+                [studentId, courseCode, semester]
             );
 
             if (insertResult[0].affectedRows > 0) {
@@ -782,7 +941,7 @@ app.post('/update-registration-status', async (req, res) => {
                 throw new Error('Failed to enroll course despite successful status update');
             }
         } else if (updateResult[0].affectedRows > 0) {
-            // If the status is not "Accepted" but was updated
+            // If the status is not "Approved" but was updated
             res.json({ message: 'Registration status updated successfully' });
         } else {
             // If no rows were updated
@@ -795,53 +954,203 @@ app.post('/update-registration-status', async (req, res) => {
 });
 
 
+app.get('/get-registration-requests', (req, res) => {
+    const { studentId } = req.query;  // Access studentId from query parameters
 
-app.get('/get-registration-requests', async (req, res) => {
-    const instructorId = req.query.instructorId;
-
-    if (!instructorId) {
-        return res.status(400).json({ error: "Instructor ID is required" });
+    if (!studentId) {
+        return res.status(400).json({ error: 'Student ID is required' });
     }
 
-    try {
-        const [requests] = await pool1.query(
-            `SELECT  r.Student_ID, r.Course_Code, r.Registration_Status
-             FROM Registration r
-             JOIN courses c ON r.Course_Code = c.Course_Code
-             WHERE r.Instructor_ID = ?`,
-            [instructorId]
-        );
+    const query = `
+        SELECT Course_Code, Registration_Status,Student_ID,Semester
+        FROM Registration
+        WHERE Student_ID = ?
+    `;
 
-        if (requests.length === 0) {
-            return res.status(404).json({ message: "No registration requests found for this instructor" });
+    pool.query(query, [studentId], (err, results) => {
+        if (err) {
+            console.error('Error fetching registration requests:', err);
+            return res.status(500).json({ error: 'Internal server error' });
         }
-
-        res.json(requests);
-    } catch (error) {
-        console.error('Database error:', error);
-        res.status(500).json({ error: "Failed to fetch registration requests" });
-    }
+        if (results.length === 0) {
+            return res.status(404).json({ message: 'No registration requests found for this student' });
+        }
+        console.log(results);
+        res.json(results);
+    });
 });
 
 // Get Instructor ID by email
 app.get('/get-instructor-id/:email', (req, res) => {
-    const email = req.params.email;
+    const { email } = req.params;
 
+    // SQL query to fetch the instructor ID
     const query = 'SELECT Instructor_ID FROM Instructor WHERE Instructor_Email = ?';
+    console.log("sdfd");
+    // Execute the query using the email parameter
     pool.query(query, [email], (err, results) => {
-        if (err) throw err;
+        if (err) {
+            console.error('Error executing query:', err);
+            return res.status(500).json({ error: 'Internal server error' });
+        }
 
         if (results.length === 0) {
-            res.status(404).send('Instructor not found');
-        } else {
-
-            res.json({ id: results[0].Instructor_ID });
+            return res.status(404).json({ error: 'Instructor not found' });
         }
+
+        // Return the instructor ID
+        console.log(results[0].Instructor_ID);
+        res.json({ id: results[0].Instructor_ID });
+
     });
 });
 
 
+app.get('/get-FAs-students', (req, res) => {
+    const instructorId = req.query.instructorId;
+    if (!instructorId) {
+        return res.status(400).json({ error: "Instructor ID is required" });
+    }
 
+    const sql = `
+        SELECT s.Student_ID, s.Student_Name, s.Faculty_Advisor
+        FROM student s
+        WHERE s.Instructor_ID = ?
+    `;
+
+    pool.query(sql, [instructorId], (err, results) => {
+        if (err) {
+            console.error('Error fetching students:', err);
+            return res.status(500).json({ error: 'Internal server error' });
+        }
+        if (results.length === 0) {
+            return res.status(404).json({ message: 'No students found for this instructor' });
+        }
+        res.json(results);
+    });
+});
+
+
+// Endpoint to get all courses with grades for a student
+app.get('/get-student-courses', (req, res) => {
+    const { studentId } = req.query;
+
+    if (!studentId) {
+        return res.status(400).json({ error: 'Student ID is required' });
+    }
+
+    const query = `
+        SELECT 
+            c.Course_Code, 
+            c.School, 
+            c.Instructor_Name, 
+            ce.Semester,
+            c.Credit, 
+            c.Course_Type,
+            g.Grade
+        FROM 
+            courses c
+        JOIN 
+            course_enrollment ce ON c.Course_Code = ce.Course_Code
+        LEFT JOIN 
+            grades g ON g.Course_Code = c.Course_Code AND g.Student_ID = ce.Student_ID
+        WHERE 
+            ce.Student_ID = ?
+    `;
+
+    pool.query(query, [studentId], (err, results) => {
+        if (err) {
+            console.error('Error fetching courses:', err);
+            return res.status(500).json({ error: 'Internal server error' });
+        }
+        if (results.length === 0) {
+            return res.status(404).json({ message: 'No courses found for this student' });
+        }
+        res.json(results);
+    });
+});
+
+
+app.get('/get-all-students', (req, res) => {
+    const sql = 'SELECT * FROM student'; // Adjust SQL as needed
+    pool.query(sql, (err, results) => {
+        if (err) {
+            console.error('Failed to fetch students:', err);
+            res.status(500).send('Failed to fetch students');
+        } else {
+            res.json(results);
+        }
+    });
+});
+
+// 
+
+app.get("/get-registrations/:studentId", (req, res) => {
+    const studentId = parseInt(req.params.studentId);
+    const query = `
+        SELECT Student_ID, Course_Code, Instructor_ID, Semester, Registration_Status, Registration_Date 
+        FROM Registration 
+        WHERE Student_ID = ?;
+    `;
+
+    pool.query(query, [studentId], (err, results) => {
+        if (err) {
+            console.error("Error fetching registrations:", err);
+            res.status(500).json({ error: "Internal server error" });
+            return;
+        }
+        // console.log(results);
+        res.json(results);
+    });
+});
+
+app.post("/cancel-registration", (req, res) => {
+    const { studentId, courseId } = req.body;
+
+    pool.query('BEGIN', (err) => {
+        if (err) {
+            console.error("Error starting transaction:", err);
+            res.status(500).json({ error: "Internal server error starting transaction" });
+            return;
+        }
+
+        const updateQuery = `UPDATE Registration SET Registration_Status = 'Cancelled' WHERE Student_ID = ? AND Course_Code = ? AND Registration_Status != 'Cancelled'`;
+        pool.query(updateQuery, [studentId, courseId], (err, updateResult) => {
+            if (err || updateResult.rowCount === 0) {
+                pool.query('ROLLBACK', (err) => {
+                    if (err) {
+                        console.error("Error rolling back transaction:", err);
+                    }
+                    res.status(404).json({ message: "Registration not found or already cancelled" });
+                });
+                return;
+            }
+
+            const deleteQuery = `DELETE FROM course_enrollment WHERE Student_ID = ? AND Course_Code = ? `;
+            pool.query(deleteQuery, [studentId, courseId], (err) => {
+                console.log("AFFD",);
+                if (err) {
+                    pool.query('ROLLBACK', (err) => {
+                        if (err) {
+                            console.error("Error rolling back transaction:", err);
+                        }
+                        res.status(500).json({ error: "Internal server error during deletion" });
+                    });
+                    return;
+                }
+
+                pool.query('COMMIT', (err) => {
+                    if (err) {
+                        console.error("Error committing transaction:", err);
+                        res.status(500).json({ error: "Internal server error during commit" });
+                        return;
+                    }
+                    res.json({ message: "Registration cancelled and enrollment deleted successfully" });
+                });
+            });
+        });
+    });
+});
 
 var port = process.env.PORT || 5000
 app.listen(port, function (req, res) {

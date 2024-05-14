@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -32,10 +33,11 @@
 
         form {
             text-align: center;
-            
+
         }
 
-        input[type="file"], button[type="submit"] {
+        input[type="file"],
+        button[type="submit"] {
             align-items: center;
             width: 100%;
             padding: 10px;
@@ -59,22 +61,27 @@
             position: absolute;
             top: 10px;
             left: 10px;
-            background-color: #272259; /* Green background */
+            background-color: #272259;
+            /* Green background */
             border: none;
-            color: white; /* White text */
-            padding: 10px 20px; /* Padding */
+            color: white;
+            /* White text */
+            padding: 10px 20px;
+            /* Padding */
             text-align: center;
             text-decoration: none;
             display: inline-block;
             font-size: 12px;
-            cursor: pointer; /* Cursor on hover */
-            border-radius: 5px; /* Rounded corners */
-            transition: background-color 0.3s; /* Smooth transition */
+            cursor: pointer;
+            /* Cursor on hover */
+            border-radius: 5px;
+            /* Rounded corners */
+            transition: background-color 0.3s;
+            /* Smooth transition */
         }
-        
-
     </style>
 </head>
+
 <body>
     <button id="backToHomeBtn" style="position: absolute; top: 10px; left: 10px;">Back to Home</button>
     <div class="container">
@@ -87,33 +94,49 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const form = document.getElementById('gradeSubmissionForm');
+            if (!form) {
+                console.error('Form not found');
+                return; // Stop execution if form is not found
+            }
             const queryParams = new URLSearchParams(window.location.search);
             const courseCode = queryParams.get('course');
             document.getElementById('courseCode').value = courseCode;
 
-            form.addEventListener('submit', function(event) {
-                event.preventDefault();
+            form.addEventListener('submit', function (event) {
+                event.preventDefault(); // Prevent the default form submission
+
                 const formData = new FormData(form);
                 fetch('http://localhost:5000/submit-grades', {
                     method: 'POST',
                     body: formData
                 })
-                .then(response => response.text())
-                .then(data => {
-                    alert(data);
-                    form.reset();
-                })
-                .catch(error => {
-                    console.error('Error submitting grades:', error);
-                    alert('Error submitting grades. Please try again.');
-                });
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok.');
+                        }
+                        return response.text();
+                    })
+                    .then(data => {
+                        alert(`Grades submitted successfully. Response from server: ${data}`);
+                        // form.reset(); // Reset form fields after successful submission
+                    })
+                    .catch(error => {
+                        console.error('Error submitting grades:', error);
+                        alert(`Failed to submit grades. Please check your network connection or contact the administrator if the problem persists. Error: ${error.message}`);
+                        setTimeout(() => {
+                            console.log('Processing completed after waiting for 1 second.');
+                        }, 2000);
+                    });
             });
-            document.getElementById('backToHomeBtn').addEventListener('click', function() {
-          history.back(); // Go back to the previous page
+
+            document.getElementById('backToHomeBtn').addEventListener('click', function () {
+                history.back(); // Go back to the previous page
+            });
         });
-        });
+
     </script>
 </body>
+
 </html>

@@ -4,176 +4,272 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Instructor Dashboard</title>
-    <!-- <link rel="stylesheet" href="styles.css">  Ensure you have this CSS file for styling -->
-    <Style>
-        #requestsContainer div {
-            margin-bottom: 10px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+    <title>Student Registration Requests </title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
         }
 
-        button {
-            margin-right: 5px;
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .button {
             padding: 5px 10px;
-            background-color: #007bff;
             color: white;
+            background-color: #007bff;
             border: none;
-            border-radius: 3px;
+            border-radius: 5px;
             cursor: pointer;
         }
 
-        button:hover {
-            opacity: 0.8;
+        .button:hover {
+            background-color: #0056b3;
         }
-    </Style>
-    <!-- Using Axios for easier HTTP requests -->
+
+        #studentListContainer,
+        #requestsContainer {
+            margin-top: 20px;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .button {
+            padding: 8px 16px;
+            color: white;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .button:hover {
+            background-color: #0056b3;
+        }
+
+        #studentListContainer,
+        #requestsContainer,
+        #coursesContainer {
+            margin-top: 30px;
+        }
+
+        h3 {
+            margin-top: 20px;
+            color: #333;
+        }
+
+        .container {
+            display: none;
+        }
+
+        .container.active {
+            display: block;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .button.accepted {
+            background-color: green;
+            color: white;
+        }
+
+        .button.rejected {
+            background-color: red;
+            color: white;
+        }
+    </style>
 </head>
 
 <body>
-    <h2>Instructor Dashboard</h2>
-    <div id="requestsContainer">
-        <!-- Registration requests will be populated here -->
-    </div>
+    <h1>Student Registration Requests</h1>
+    <div id="studentListContainer"></div>
+    <div id="requestsContainer"></div>
+    <div id="coursesContainer"></div>
 
     <script>
-        // function updateRegistrationStatus(studentId, courseCode, status) {
-        //     console.log('Updating registration status:', studentId, courseCode, status);
-        //     // Implementation of the function
-
-        //     fetch(`${baseURL}/update-registration-status`, {
-        //         method: 'POST',
-        //         headers: {
-        //             'Content-Type': 'application/json'
-        //         },
-        //         body: JSON.stringify({ studentId, courseCode, status })
-        //     })
-        //         .then(response => {
-        //             if (!response.ok) {
-        //                 throw new Error('Failed to update registration status: ' + response.statusText);
-        //             }
-        //             return response.json();
-        //         })
-        //         .then(data => {
-        //             alert(data.message);
-        //             // Assuming you pass the instructorId to refetch updates
-        //             fetchRegistrationRequests(document.getElementById('instructorId').value);
-        //         })
-        //         .catch(error => {
-        //             console.error(error);
-        //             alert('Error updating registration status.');
-        //         });
-        // }
-        const baseURL = 'http://localhost:5000';  // Base URL for the API
-
-        function updateRegistrationStatus(studentId, courseCode, status) {
-            fetch(`${baseURL}/update-registration-status`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    studentId: studentId,
-                    courseCode: courseCode,
-                    status: status
-                })
-            })
+        const baseURL = 'http://localhost:5000'; // Your API base URL
+        function fetchInstructorId(email) {
+            fetch(`http://localhost:5000/get-instructor-id/${encodeURIComponent(email)}`)
                 .then(response => {
                     if (!response.ok) {
-                        throw new Error('Failed to update registration status: ' + response.statusText);
+                        throw new Error('Failed to fetch instructor ID');
                     }
                     return response.json();
                 })
                 .then(data => {
-                    alert(data.message);
-                    fetchRegistrationRequests(sessionStorage.getItem('instructorId'));
+                    // console.log('Instructor ID:', data.id);
+                    // You can now use the instructor ID as needed in your app
+                    // return data.id;
+                    fetchStudents(data.id)
                 })
-                .catch(error => {
-                    console.error('Error updating registration status:', error);
-                    alert('Error updating registration status.');
-                });
+                .catch(error => console.error('Error:', error));
         }
+
+
         document.addEventListener('DOMContentLoaded', function () {
-            const baseURL = 'http://localhost:5000';
+            // const instructorId = sessionStorage.getItem('instructorId');
             const instructorEmail = sessionStorage.getItem('username');
-            console.log("Instructor Email:", instructorEmail);
-
-            if (!instructorEmail) {
-                console.error("No instructor email found in session storage.");
-                return;
-            }
+            // Assuming the instructor ID is stored in sessionStorag
             fetchInstructorId(instructorEmail);
-            console.log('oaakay');
-            // fetchRegistrationRequests(180101);
-            // fetchInstructorId(instructorEmail);
 
-            function fetchInstructorId(email) {
-                const baseURL = 'http://localhost:5000'; // Ensure baseURL is defined
-
-                // Update the fetch URL to use path parameters instead of query parameters
-                fetch(`${baseURL}/get-instructor-id/${encodeURIComponent(email)}`)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error(`HTTP error, status = ${response.status}`);
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        if (data.id) {  // Make sure to match the property name returned by your API
-                            console.log('Fetched Instructor ID:', data.id);
-                            fetchRegistrationRequests(data.id);
-                        } else {
-                            console.error('No instructor ID found');
-                        }
-                    })
-                    .catch(error => console.error('Error fetching instructor ID:', error));
-            }
-
-
-
-
-
-            function fetchRegistrationRequests(instructorId) {
-                fetch(`${baseURL}/get-registration-requests?instructorId=${instructorId}`)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Failed to fetch registration requests: ' + response.statusText);
-                        }
-                        return response.json();
-                    })
-                    .then(requests => populateRegistrationRequests(requests))
-                    .catch(error => {
-                        console.error(error);
-                        document.getElementById('requestsContainer').innerHTML = '<p>Error loading registration requests.</p>';
-                    });
-            }
-
-            function populateRegistrationRequests(requests) {
-                const container = document.getElementById('requestsContainer');
-                container.innerHTML = ''; // Clear previous entries
-
-                if (requests.length === 0) {
-                    container.innerHTML = '<p>No registration requests found.</p>';
-                    return;
-                }
-
-                requests.forEach(request => {
-                    const requestDiv = document.createElement('div');
-                    requestDiv.className = 'request';
-                    requestDiv.innerHTML = `
-                <p><strong>Course:</strong> (${request.Course_Code})</p>
-                <p><strong>Student ID:</strong> ${request.Student_ID}</p>
-                <p><strong>Status:</strong> ${request.Registration_Status}</p>
-                <button onclick="updateRegistrationStatus('${request.Student_ID}', '${request.Course_Code}', 'Approved')">Accept</button>
-                <button onclick="updateRegistrationStatus('${request.Student_ID}', '${request.Course_Code}', 'Rejected')">Reject</button>
-            `;
-                    container.appendChild(requestDiv);
-                });
-            }
-
+            //    console.log(id);
+            //     if (id) {
+            //         fetchStudents(id);
+            //     } else {
+            //         console.error('No instructor ID found in session storage.');
+            //     }
         });
 
+
+        function fetchStudents(instructorId) {
+            fetch(`${baseURL}/get-FAs-students?instructorId=${instructorId}`)
+                .then(response => response.json())
+                .then(students => populateStudentList(students))
+                .catch(error => console.error('Error fetching students:', error));
+        }
+
+        function populateStudentList(students) {
+            const container = document.getElementById('studentListContainer');
+            let tableHtml = '<table><tr><th>Student ID</th><th>Name</th><th>View Registrations</th><th>View Courses</th></tr>';
+            students.forEach(student => {
+                tableHtml += `
+                    <tr>
+                        <td>${student.Student_ID}</td>
+                        <td>${student.Student_Name}</td>
+
+                        <td><button class="button" onclick="fetchRegistrationRequests('${student.Student_ID}')">View Registration Requests</button></td>
+                        <td><button class="button" onclick="fetchStudentCourses('${student.Student_ID}')">View Courses</button></td>
+                    </tr>
+                `;
+            });
+            tableHtml += '</table>';
+            container.innerHTML = tableHtml;
+        }
+
+        function fetchRegistrationRequests(studentId) {
+            document.getElementById('requestsContainer').style.display = 'block';
+            document.getElementById('coursesContainer').style.display = 'none';
+            fetch(`${baseURL}/get-registration-requests?studentId=${studentId}`)
+                .then(response => response.json())
+                .then(requests => populateRegistrationRequests(requests))
+                .catch(error => {
+                    console.error('NO new  registration requests:', error);
+                    document.getElementById('requestsContainer').innerHTML = 'Failed to load registration requests.';
+                });
+        }
+
+        function populateRegistrationRequests(requests) {
+            const container = document.getElementById('requestsContainer');
+            container.innerHTML = ''; // Clear previous requests
+
+            let tableHtml = '<table><tr><th>Course Code</th><th>Status</th><th>Semester</th><th>Update</th></tr>';
+            requests.forEach(request => {
+                const isAccepted = request.Registration_Status === 'Approved';
+                const isRejected = request.Registration_Status === 'Rejected';
+                tableHtml += `
+                    <tr>
+                        <td>${request.Course_Code}</td>
+                        <td>${request.Registration_Status}</td>
+                        <td>${request.Semester}</td>
+                        <td>
+                            <button class="button ${isAccepted ? 'accepted' : ''}" onclick="updateRegistrationStatus('${request.Student_ID}', '${request.Course_Code}', 'Approved')" ${isAccepted ? 'disabled' : ''}>
+                        ${isAccepted ? 'Accepted' : 'Accept'}
+                    </button>
+                    <button class="button ${isRejected ? 'rejected' : ''}" onclick="updateRegistrationStatus('${request.Student_ID}', '${request.Course_Code}', 'Rejected')" ${isRejected ? 'disabled' : ''}>
+                        ${isRejected ? 'Rejected' : 'Reject'}
+                    </button></td>
+                    </tr>
+                `;
+            });
+            tableHtml += '</table>';
+            container.innerHTML = tableHtml;
+        }
+
+        function updateRegistrationStatus(studentId, courseCode, status) {
+            console.log(studentId);
+            fetch(`${baseURL}/update-registration-status`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ studentId, courseCode, status })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                    fetchRegistrationRequests(studentId); // Refresh list after update
+                })
+                .catch(error => console.error('Error updating registration status:', error));
+        }
+
+        function fetchStudentCourses(studentId) {
+
+
+            document.getElementById('requestsContainer').style.display = 'none';
+            document.getElementById('coursesContainer').style.display = 'block';
+            fetch(`http://localhost:5000/get-student-courses?studentId=${studentId}`)
+                .then(response => response.json())
+                .then(courses => populateCourses(courses))
+                .catch(error => {
+                    console.error('Error fetching courses:', error);
+                    document.getElementById('coursesContainer').innerHTML = 'No courses Found.';
+                });
+        }
+
+        function populateCourses(courses) {
+            const container = document.getElementById('coursesContainer');
+            let tableHtml = '<table border="1" style="width: 100%; border-collapse: collapse;">';
+            tableHtml += '<tr><th>Course Code</th><th>Instructor Name</th><th>Course Type</th><th>School</th><th>Semester</th><th>Credit</th><th>Grade</th></tr>';
+
+            courses.forEach(course => {
+                tableHtml += `
+            <tr>
+                <td>${course.Course_Code}</td>
+                <td>${course.Instructor_Name}</td>
+                <td>${course.Course_Type}</td>
+                <td>${course.School}</td>
+                <td>${course.Semester}</td>
+                <td>${course.Credit}</td>
+                <td>${course.Grade || 'Not Graded'}</td>
+            </tr>
+        `;
+            });
+
+            tableHtml += '</table>';
+            container.innerHTML = tableHtml;
+        }
     </script>
 </body>
 

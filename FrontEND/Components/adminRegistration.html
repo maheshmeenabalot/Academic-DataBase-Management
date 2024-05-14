@@ -1,91 +1,239 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Registration Management</title>
-    <style>body {
-        font-family: 'Arial', sans-serif; /* Consistent font for the whole page */
-        background-color: #f4f4f9; /* Light grey background for a softer look */
-        display: flex;
-        justify-content: center; /* Center the main content horizontally */
-        align-items: center; /* Center the main content vertically */
-        flex-direction: column; /* Align children elements in a column */
-        height: 100vh; /* Full viewport height */
-        color: #333; /* Dark grey color for text for better readability */
-        text-align: center; /* Center-align text */
-        padding: 20px; /* Padding around the body to prevent content from touching the edges */
-    }
-    
-    #backToHomeBtn {
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        background-color: #272259; /* Dark blue background */
-        color: white;
-        padding: 10px;
-        font-size: 14px;
-        cursor: pointer;
-        border-radius: 5px;
-        transition: background-color 0.3s;
-    }
-    
-    #registrationControls {
-        background: white; /* White background for the form area */
-        padding: 20px;
-        border-radius: 8px; /* Rounded corners for the form container */
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Subtle shadow for depth */
-        width: 90%; /* Responsive width */
-        max-width: 500px; /* Maximum width */
-        margin-top: 20px; /* Space between h1 and the form */
-    }
-    
-    h1 {
-        margin-bottom: 20px; /* Spacing below the header */
-    }
-    
-    form {
-        display: flex;
-        flex-direction: column; /* Stack form elements vertically */
-    }
-    
-    label {
-        font-weight: bold; /* Make labels bold */
-        margin-top: 10px; /* Space above each label */
-    }
-    
-    input[type="datetime-local"], select {
-        width: 100%; /* Full width inputs */
-        padding: 8px; /* Padding inside inputs */
-        margin-top: 5px; /* Space above inputs */
-        border: 1px solid #ccc; /* Subtle border for inputs */
-        border-radius: 4px; /* Rounded corners for inputs */
-    }
-    
-    button {
-        background-color: #5c67f2; /* Bright blue background */
-        color: white; /* White text */
-        padding: 10px 15px; /* Padding around text */
-        font-size: 16px; /* Larger font size */
-        border: none; /* No border */
-        border-radius: 5px; /* Rounded corners */
-        margin-top: 20px; /* Space above button */
-        cursor: pointer; /* Pointer cursor on hover */
-        transition: background-color 0.3s; /* Smooth transition for hover effect */
-    }
-    
-    button:hover {
-        background-color: #5058e5; /* Slightly darker blue on hover */
-    }
-    
-        
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            /* Consistent font for the whole page */
+            background-color: #f4f4f9;
+            /* Light grey background for a softer look */
+            display: flex;
+            justify-content: center;
+            /* Center the main content horizontally */
+            align-items: center;
+            /* Center the main content vertically */
+            flex-direction: column;
+            /* Align children elements in a column */
+            height: 100vh;
+            /* Full viewport height */
+            color: #333;
+            /* Dark grey color for text for better readability */
+            text-align: center;
+            /* Center-align text */
+            padding: 20px;
+            /* Padding around the body to prevent content from touching the edges */
+        }
+
+        #backToHomeBtn {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: #272259;
+            /* Dark blue background */
+            color: white;
+            padding: 10px;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        #registrationControls {
+            background: white;
+            /* White background for the form area */
+            padding: 20px;
+            border-radius: 8px;
+            /* Rounded corners for the form container */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            /* Subtle shadow for depth */
+            width: 90%;
+            /* Responsive width */
+            max-width: 500px;
+            /* Maximum width */
+            margin-top: 20px;
+            /* Space between h1 and the form */
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            /* Spacing below the header */
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            /* Stack form elements vertically */
+        }
+
+        label {
+            font-weight: bold;
+            /* Make labels bold */
+            margin-top: 10px;
+            /* Space above each label */
+        }
+
+        input[type="datetime-local"],
+        select {
+            width: 100%;
+            /* Full width inputs */
+            padding: 8px;
+            /* Padding inside inputs */
+            margin-top: 5px;
+            /* Space above inputs */
+            border: 1px solid #ccc;
+            /* Subtle border for inputs */
+            border-radius: 4px;
+            /* Rounded corners for inputs */
+        }
+
+        button {
+            background-color: #5c67f2;
+            /* Bright blue background */
+            color: white;
+            /* White text */
+            padding: 10px 15px;
+            /* Padding around text */
+            font-size: 16px;
+            /* Larger font size */
+            border: none;
+            /* No border */
+            border-radius: 5px;
+            /* Rounded corners */
+            margin-top: 20px;
+            /* Space above button */
+            cursor: pointer;
+            /* Pointer cursor on hover */
+            transition: background-color 0.3s;
+            /* Smooth transition for hover effect */
+        }
+
+        button:hover {
+            background-color: #5058e5;
+            /* Slightly darker blue on hover */
+        }
+
+
+        /* Pagination container */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            list-style: none;
+            padding: 10px;
+        }
+
+        .pagination li {
+            padding: 8px 12px;
+            margin: 4px;
+            background-color: #009879;
+            color: white;
+            cursor: pointer;
+        }
+
+        .pagination li.active {
+            background-color: #007861;
+        }
+
+        .pagination li:hover {
+            background-color: #007861;
+        }
+
+        /* Disabled state for buttons */
+        .pagination li.disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .filter-label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 16px;
+            color: #333;
+        }
+
+        /* Container for checkbox options to ensure alignment and padding */
+        .filter-block {
+            padding: 10px;
+            margin: 10px 0;
+            background-color: #f9f9f9;
+            /* Light background for the section */
+            border-radius: 8px;
+            /* Rounded corners */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            /* Subtle shadow for depth */
+        }
+
+        /* Style for each label containing a checkbox */
+        .filter-block label {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            color: #333;
+            /* Dark grey for readability */
+            cursor: pointer;
+            /* Indicates that the label is clickable */
+            font-size: 14px;
+            /* Optimal font size for readability */
+            user-select: none;
+            /* Prevent text selection */
+        }
+
+        /* Hidden actual checkbox input */
+        .filter-block input[type="checkbox"] {
+            margin-right: 5px;
+            /* Space between checkbox and label text */
+        }
+
+        /* Number inputs for CGPA */
+        .filter-block input[type="number"] {
+            width: auto;
+            /* Adjust width as per content */
+            padding: 8px;
+            margin: 5px 10px 5px 0;
+            border: 1px solid #ccc;
+            /* Light grey border */
+            border-radius: 4px;
+            /* Rounded corners for the input field */
+        }
+
+        /* Style for the form submission button */
+        #filterForm button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            /* Primary blue */
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #filterForm button:hover {
+            background-color: #0056b3;
+            /* Darker blue on hover */
+        }
     </style>
-    <link rel="stylesheet" href="style.css"> <!-- Ensure you have this CSS file for styling -->
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-    <button id="backToHomeBtn" style="position: absolute; top: 10px; left: 10px;">Back</button>
+    <button id="backToHomeBtn" style="position: absolute; top: 10px; left: 10px;">Back To Home</button>
+    <br>
+    <br>
+    <br>
     <h1>Admin Registration Management</h1>
-    <div id="registrationControls">
+    <!-- Initial buttons for action selection -->
+
+    <button id="showRegBtn">Show Registration</button>
+    <button id="manageRegBtn">Manage Registration Period</button>
+    <button id="toggleFilterBtn" style="display:none;">Filter</button>
+    <button id="backbtn" style="display:none;">Back</button>
+    <div id="registrationControls" style="display: none;">
         <form id="semesterRegistrationForm" onsubmit="saveRegistrationDates(event)">
             <h2>Set Registration Period for Semesters</h2>
             <label for="semester">Select Semester:</label>
@@ -109,24 +257,263 @@
             <input type="datetime-local" id="closeDate" name="closeDate" required>
 
             <button type="submit">Save Dates</button>
+            <button type="button" onclick="endRegistrationNow()">End Registration Now</button>
+    
+        </form>
+    </div>
+
+    <div id="studentList"></div>
+    <div id="registrationDetails">
+        <!-- <h2>Registration Details</h2> -->
+        <!-- Dynamically created tables will be appended here -->
+    </div>
+
+    <!-- Button to show/hide the filter form -->
+    <div id="filterFormContainer" style="display:none;">
+        <form id="filterForm">
+            <div class="filter-block">
+                <span class="filter-label">Branch:</span>
+                <label><input type="checkbox" name="branch" value="CSE"> CSE</label>
+                <label><input type="checkbox" name="branch" value="MNC"> MNC</label>
+                <label><input type="checkbox" name="branch" value="EE"> EE</label>
+                <label><input type="checkbox" name="branch" value="ME"> ME</label>
+            </div>
+            <div class="filter-block">
+                <span class="filter-label">Batch:</span>
+                <label><input type="checkbox" name="batch" value="2020"> 2020</label>
+                <label><input type="checkbox" name="batch" value="2021"> 2021</label>
+                <label><input type="checkbox" name="batch" value="2022"> 2022</label>
+                <label><input type="checkbox" name="batch" value="2023"> 2023</label>
+            </div>
+            <div class="filter-block">
+                <span class="filter-label">Gender:</span>
+                <label><input type="checkbox" name="gender" value="Male"> Male</label>
+                <label><input type="checkbox" name="gender" value="Female"> Female</label>
+            </div>
+            <div class="filter-block">
+                <span class="filter-label">CGPA Range:</span>
+                <input type="number" name="cgpaMin" placeholder="Min CGPA">
+                <input type="number" name="cgpaMax" placeholder="Max CGPA">
+            </div>
+            <button type="submit">Apply Filters</button>
         </form>
     </div>
 
     <script>
-
-document.addEventListener("DOMContentLoaded", () => {
-            document.getElementById('backToHomeBtn').addEventListener('click', function () {
-                history.back(); // Go back to the previous page
-            });
+        // Existing script for handling form submission and other logic
+        document.getElementById('backToHomeBtn').addEventListener('click', function () {
+            history.back(); // Go back to the previous page
         });
+
+        document.getElementById('manageRegBtn').addEventListener('click', function () {
+            document.getElementById('registrationControls').style.display = 'block'; // Show the registration form
+            document.getElementById('showRegBtn').style.display = 'none'; // Optionally hide the 'Show Registration' button
+            this.style.display = 'none'; // Hide the 'Manage Registration Period' button
+            document.getElementById('backbtn').style.display = 'block';
+        });
+        document.getElementById('toggleFilterBtn').addEventListener('click', function () {
+            // document.getElementById('registrationControls').style.display = 'block'; // Show the registration form
+            // document.getElementById('showRegBtn').style.display = 'none'; // Optionally hide the 'Show Registration' button
+            this.style.display = 'none'; // Hide the 'Manage Registration Period' button
+            document.getElementById('filterFormContainer').style.display = 'block';
+            document.getElementById('registrationControls').style.display = 'none';
+            document.getElementById('studentList').style.display = 'none'; // Optionally hide the 'Show Registration' button
+            document.getElementById('backbtn').style.display = 'block';
+
+
+        });
+        document.getElementById('backbtn').addEventListener('click', function () {
+            // document.getElementById('registrationControls').style.display = 'block'; // Show the registration form
+            // document.getElementById('showRegBtn').style.display = 'none'; // Optionally hide the 'Show Registration' button
+            this.style.display = 'none'; // Hide the 'Manage Registration Period' button
+            document.getElementById('filterFormContainer').style.display = 'none';
+            document.getElementById('registrationControls').style.display = 'none';
+            document.getElementById('studentList').style.display = 'none'; // Optionally hide the 'Show Registration' button
+            document.getElementById('showRegBtn').style.display = 'block';
+            document.getElementById('registrationControls').style.display = 'none';
+            document.getElementById('toggleFilterBtn').style.display = 'none';
+            document.getElementById('manageRegBtn').style.display = 'block';
+            document.getElementById('registrationDetails').style.display = 'none';
+        });
+
+
+        document.getElementById('showRegBtn').addEventListener('click', function () {
+            showRegistration(); // Call the function to show registrations
+            document.getElementById('manageRegBtn').style.display = 'none'; // Optionally hide the 'Manage Registration Period' button
+            this.style.display = 'none'; // Hide the 'Show Registration' button
+            document.getElementById('toggleFilterBtn').style.display = 'block';
+            document.getElementById('backbtn').style.display = 'block';
+            document.getElementById('studentList').style.display = 'block';
+
+        });
+
+        function showRegistration() {
+            fetch('http://localhost:5000/get-all-students') // Adjust URL as needed
+                .then(response => response.json())
+                .then(data => {
+                    const container = document.getElementById('studentList');
+                    container.innerHTML = ''; // Clear previous data
+                    const table = document.createElement('table');
+                    const paginationWrapper = document.createElement("ul");
+                    paginationWrapper.className = "pagination";
+                    table.innerHTML = `
+            <tr>
+                <th>Student ID</th>
+                <th>Name</th>
+                <th>Branch</th>
+                <th>Batch</th>
+                <th>Gender</th>
+                <th>Email</th>
+                <th>CGPA</th>
+                <th>Faculty_Advisor</th>
+                <th>View Registrations</th>
+            </tr>
+            `; // Removed Cancel Registration for clarity
+
+                    // Prepare to inject rows into tbody to simplify display management
+                    const tbody = document.createElement('tbody');
+                    table.appendChild(tbody);
+                    data.forEach(student => {
+                        const row = tbody.insertRow();
+                        row.insertCell().textContent = student.Student_ID;
+                        row.insertCell().textContent = student.Student_Name;
+                        row.insertCell().textContent = student.Branch;
+                        row.insertCell().textContent = student.Batch;
+                        row.insertCell().textContent = student.Gender;
+                        row.insertCell().textContent = student.Email;
+                        row.insertCell().textContent = student.CGPA;
+                        row.insertCell().textContent = student.Faculty_Advisor;
+
+                        // View button
+                        const viewBtn = document.createElement('button');
+                        viewBtn.textContent = 'View';
+                        viewBtn.onclick = () => viewRegistrations(student.Student_ID);
+                        row.insertCell().appendChild(viewBtn);
+                    });
+
+                    container.appendChild(table);
+                    container.appendChild(paginationWrapper); // Append the pagination below the table
+
+                    initializePagination(data, tbody); // Initialize pagination after data load
+                })
+                .catch(error => console.error('Error fetching student data:', error));
+        }
+
+        function initializePagination(data, tbody) {
+            const rowsPerPage = 10;
+            const pageCount = Math.ceil(data.length / rowsPerPage);
+            const paginationWrapper = document.querySelector(".pagination");
+            paginationWrapper.innerHTML = ''; // Clear existing pagination buttons if any
+
+            // Helper function to display a specific page
+            function displayPage(page) {
+                const start = page * rowsPerPage;
+                const end = start + rowsPerPage;
+                const rows = tbody.querySelectorAll("tr");
+                rows.forEach(row => row.style.display = 'none'); // Hide all rows
+                rows.forEach((row, index) => {
+                    if (index >= start && index < end) row.style.display = ''; // Show rows for the current page
+                });
+
+                // Update active class on buttons
+                Array.from(paginationWrapper.querySelectorAll("li")).forEach(li => li.classList.remove("active"));
+                paginationWrapper.querySelectorAll("li")[page].classList.add("active");
+            }
+
+            // Creating pagination buttons
+            for (let i = 0; i < pageCount; i++) {
+                const li = document.createElement("li");
+                li.textContent = i + 1;
+                li.addEventListener("click", () => displayPage(i));
+                paginationWrapper.appendChild(li);
+            }
+
+            // Initialize the first page
+            displayPage(0);
+            paginationWrapper.firstChild.classList.add("active");
+        }
+
+        function viewRegistrations(studentId) {
+            document.getElementById('studentList').style.display = 'none';
+            document.getElementById('backbtn').style.display = 'block';
+            fetch(`http://localhost:5000/get-registrations/${studentId}`)
+                .then(response => response.json())
+                .then(registrations => {
+                    // Create a new table element
+                    const table = document.createElement('table');
+                    table.innerHTML = `
+                    <thead>
+                        <tr>
+                            <th>Student ID</th>
+                            <th>Course Code</th>
+                            <th>Instructor ID</th>  
+                            <th>Semester</th>
+                            <th>Registration Status</th>
+                            <th>Registration Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                    `;
+                    const tbody = table.querySelector('tbody');
+
+                    // Populate the table with registration data
+                    registrations.forEach(reg => {
+                        const row = document.createElement('tr');
+                        // Check if the registration status is cancelled
+                        const isCancelled = reg.Registration_Status.toLowerCase() === 'cancelled';
+                        row.innerHTML = `
+                    <td>${reg.Student_ID}</td>
+                    <td>${reg.Course_Code}</td>
+                    <td>${reg.Instructor_ID}</td>
+                    <td>${reg.Semester}</td>
+                    <td>${reg.Registration_Status}</td>
+                    <td>${new Date(reg.Registration_Date).toLocaleString()}</td>
+                    <td><button onclick="cancelRegistration(${reg.Student_ID}, '${reg.Course_Code}')" ${isCancelled ? 'disabled style="background-color: red; color: white;"' : ''}>${isCancelled ? 'Cancelled' : 'Cancel'}</button></td>
+               `;
+                        tbody.appendChild(row);
+                    });
+
+                    // Append the new table to the registration details div
+                    const registrationDetailsDiv = document.getElementById('registrationDetails');
+                    // Clear previous tables if any
+                    registrationDetailsDiv.innerHTML = '';
+                    registrationDetailsDiv.appendChild(table);
+                })
+                .catch(error => {
+                    console.error('Failed to fetch registrations:', error);
+                    alert('Error fetching registration data.');
+                });
+        }
+
+        function cancelRegistration(studentId, courseId) {
+            // Implementation needed to cancel registration
+            console.log('Cancelling registration for:', studentId);
+            // Additional fetch to delete or update registration status
+            fetch('http://localhost:5000/cancel-registration', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ studentId, courseId })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                    viewRegistrations(studentId); // Refresh the registrations to reflect the change
+                })
+                .catch(error => {
+                    console.error('Failed to cancel registration:', error);
+                    alert('Failed to cancel registration.');
+                });
+        }
+
         function saveRegistrationDates(event) {
             event.preventDefault(); // Prevent the form from submitting in the traditional way
-
             const semester = document.getElementById('semester').value;
             const openDate = document.getElementById('openDate').value;
             const closeDate = document.getElementById('closeDate').value;
 
-            // Make sure the close date is after the open date
             if (new Date(openDate) >= new Date(closeDate)) {
                 alert('The close date must be after the open date.');
                 return;
@@ -139,15 +526,130 @@ document.addEventListener("DOMContentLoaded", () => {
                 },
                 body: JSON.stringify({ semester, openDate, closeDate })
             })
-            .then(response => response.json())
-            .then(data => {
-                alert('Registration dates updated successfully.');
-            })
-            .catch(error => {
-                console.error('Error updating registration dates:', error);
-                alert('Failed to update registration dates.');
-            });
+                .then(response => response.json())
+                .then(data => {
+                    alert('Registration dates updated successfully.');
+                })
+                .catch(error => {
+                    console.error('Error updating registration dates:', error);
+                    alert('Failed to update registration dates.');
+                });
         }
+        function endRegistrationNow() {
+    const semester = document.getElementById('semester').value;
+    const openDate = document.getElementById('openDate').value; // You might not need this
+    const currentDate = new Date().toISOString(); // Get current time in ISO format
+
+    if (!semester) {
+        alert('Please select a semester.');
+        return;
+    }
+
+    fetch('http://localhost:5000/end-registration-now', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ semester })
+    })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('closeDate').value = currentDate.slice(0, 16); // Update the closeDate input to show the new time
+            alert('Registration ended and date updated successfully.');
+        })
+        .catch(error => {
+            console.error('Error ending registration:', error);
+            alert('Failed to end registration.');
+        });
+}
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const filterForm = document.getElementById('filterForm');
+            const studentDataContainer = document.getElementById('studentList');
+
+            filterForm.addEventListener('submit', function (event) {
+                event.preventDefault();
+                console.log("zfvv");
+                document.getElementById('backbtn').style.display = 'block';
+                document.getElementById('studentList').style.display = 'block';
+                // Collecting multiple checkbox values for branches, batches, and gender
+                const branches = Array.from(document.querySelectorAll('input[name="branch"]:checked'))
+                    .map(checkbox => checkbox.value);
+                const batches = Array.from(document.querySelectorAll('input[name="batch"]:checked'))
+                    .map(checkbox => checkbox.value);
+                const genders = Array.from(document.querySelectorAll('input[name="gender"]:checked'))
+                    .map(checkbox => checkbox.value);
+
+                const cgpaMin = filterForm.querySelector('[name="cgpaMin"]').value;
+                const cgpaMax = filterForm.querySelector('[name="cgpaMax"]').value;
+
+                const queryParams = new URLSearchParams({
+                    branch: branches.join(','), // Send branches as a comma-separated list
+                    batch: batches.join(','), // Send batches as a comma-separated list
+                    gender: genders.join(','), // Send gender as a comma-separated list
+                    cgpaMin: cgpaMin,
+                    cgpaMax: cgpaMax
+                }).toString();
+
+                const url = `http://localhost:5000/filter?${queryParams}`;
+                fetch(url)
+                    .then(response => response.json())
+                    .then(data => displayFilteredResults(data))
+                    .catch(error => {
+                        console.error('Error fetching filtered data:', error);
+                        studentDataContainer.innerHTML = 'Failed to fetch data.';
+                    });
+
+                filterForm.style.display = 'none'; // Optionally hide filter form after searching
+            });
+
+
+            function displayFilteredResults(data) {
+                if (!data || data.length === 0) {
+                    studentDataContainer.innerHTML = 'No matching records found.';
+                    return;
+                }
+
+                const table = document.createElement('table');
+                table.innerHTML = `<tr>
+            <th>Student ID</th>
+            <th>Name</th>
+            <th>Branch</th>
+            <th>Batch</th>
+            <th>Gender</th>
+            <th>Email</th>
+            <th>CGPA</th>
+            <th>Faculty Advisor</th>
+            <th>View Registrations</th>
+        </tr>`;
+
+                data.forEach(student => {
+                    const row = table.insertRow();
+                    row.insertCell().textContent = student.Student_ID;
+                    row.insertCell().textContent = student.Student_Name;
+                    row.insertCell().textContent = student.Branch;
+                    row.insertCell().textContent = student.Batch;
+                    row.insertCell().textContent = student.Gender;
+                    row.insertCell().textContent = student.Email;
+                    row.insertCell().textContent = student.CGPA;
+                    row.insertCell().textContent = student.Faculty_Advisor;
+
+                    const viewBtn = document.createElement('button');
+                    viewBtn.textContent = 'View';
+                    viewBtn.onclick = () => {
+                        viewRegistrations(student.Student_ID);
+                    };
+                    row.insertCell().appendChild(viewBtn);
+                });
+
+                studentDataContainer.innerHTML = ''; // Clear any previous content
+                studentDataContainer.appendChild(table);
+            }
+
+
+        });
+
     </script>
 </body>
+
 </html>
